@@ -19,28 +19,3 @@ do {
     // let w2 = w1
 }
 
-
-
-
-//var wrapper2: FFDataWrapper? = nil
-//
-//do {
-//    var wrapper1 = FFDataWrapper(string: testString)
-//    // wrapper2 = wrapper1
-//    wrapper1.buffer.withUnsafeMutablePointerToElements {
-//        bytesPtr = $0
-//    }
-//
-//    print("Buffer contents: \(wrapper1.hexString())")
-//    var last = isKnownUniquelyReferenced(&wrapper1.buffer)
-//    let selfPtr = Unmanaged.passUnretained(wrapper1.buffer).toOpaque().assumingMemoryBound(to: FFManagedByteBuffer.self)
-//    last = isKnownUniquelyReferenced(&selfPtr.pointee)
-//    //last = isKnownUniquelyReferenced(&wrapper1.buffer)
-//
-//
-//
-//}
-//
-//let data = Data(bytes: bytesPtr!, count: testString.lengthOfBytes(using: .utf8))
-//print(data.hexString())
-

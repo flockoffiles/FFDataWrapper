@@ -23,30 +23,34 @@ public struct FFDataWrapper
         
         init(dataPtr: UnsafeMutableRawPointer)
         {
+            print("Data ptr = \(dataPtr)")
             self.dataPtr = dataPtr
         }
         
         deinit
         {
-            let count = dataPtr.assumingMemoryBound(to: Data.self).pointee.count
-            // Wipe all the bytes held by the internal buffer.
-            dataPtr.assumingMemoryBound(to: Data.self).pointee.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt8>) in
-                ptr.initialize(to: 0, count: count)
-            }
+//            let d = dataPtr.assumingMemoryBound(to: Data.self).pointee
+//            let count = dataPtr.assumingMemoryBound(to: Data.self).pointee.count
+//            // Wipe all the bytes held by the internal buffer.
+//            dataPtr.assumingMemoryBound(to: Data.self).pointee.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt8>) in
+//                ptr.initialize(to: 0, count: count)
+//            }
         }
     }
-    
-    /// Data container holding the internal representation of the wrapped data.
-    internal var data: Data
-    /// Class responsible for wiping the data buffer when FFDataWrapper is destroyed.
-    internal let deiniter: Deiniter
     
     /// Closure to convert external representation to internal.
     internal let encoder: FFDataWrapperCoder
     
     /// Closure to convert internal representation to external.
     internal let decoder: FFDataWrapperCoder
+
+    /// Data container holding the internal representation of the wrapped data.
+    internal var data: Data
+
+    /// Class responsible for wiping the data buffer when FFDataWrapper is destroyed.
+    internal let deiniter: Deiniter
     
+
     
     /// Initialize the data wrapper with the given string content and a pair of coder/decoder to convert between representations.
     ///
@@ -59,7 +63,7 @@ public struct FFDataWrapper
         self.decoder = coders.decoder
         
         let utf8 = string.utf8CString
-        let length = utf8.count
+        let length = string.lengthOfBytes(using: .utf8) // utf8.count also accounts for the last 0 byte.
         
         data = Data(capacity: length)
         /// We provide the start address of data to the Deiniter.
@@ -87,6 +91,9 @@ public struct FFDataWrapper
             // Get rid of the memory.
             emptyDataPtr.deallocate(capacity: 1)
         }
+
+        // let d = deiniter.dataPtr.assumingMemoryBound(to: Data.self).pointee
+
     }
     
     
@@ -114,22 +121,29 @@ public struct FFDataWrapper
         deiniter = Deiniter(dataPtr: { $0 as UnsafeMutableRawPointer }(&self.data))
         if (length > 0)
         {
-            // Obfuscate the data
+            // Encode the data
             data.withUnsafeBytes {
                 coders.encoder($0, length, &self.data)
             }
         }
     }
 
+    
+    /// Execute the given closure with wrapped data.
+    /// Data is converted back from its internal representation and is wiped after the closure is completed.
+    ///
+    /// - Parameter block: The closure to execute.
     public func withDecodedData(_ block: (inout Data) -> Void)
     {
         var decodedData = Data()
         let dataLength = data.count
+        
         data.withUnsafeBytes {
             decoder($0, dataLength, &decodedData)
         }
         
         block(&decodedData)
+        
         let decodedDataLength = decodedData.count
         decodedData.withUnsafeMutableBytes {
             $0.initialize(to: 0, count: decodedDataLength)
@@ -191,18 +205,20 @@ internal func justCopy(src: UnsafePointer<UInt8>, srcLength: Int, dest: inout Da
         dest.withUnsafeMutableBytes {
             $0.initialize(to: 0, count: destLength)
         }
+        dest.removeAll()
     }
 
     guard srcLength > 0 else {
         return
     }
-    
-    var j = 0
-    for i in 0 ..< srcLength
+
+    if (destLength < srcLength)
     {
-        dest[i] = src[i]
-        j += 1
-    }
+        // This may cause buffer reallocation.
+        dest.reserveCapacity(srcLength)
+    } // Otherwise we already have the needed capacity.
+
+    dest.append(src, count: srcLength)
 }
 
 /// Sample transformation for custom content. XORs the source representation (byte by byte) with the given vector.
@@ -215,27 +231,31 @@ internal func justCopy(src: UnsafePointer<UInt8>, srcLength: Int, dest: inout Da
 internal func xor(src: UnsafePointer<UInt8>, srcLength: Int, dest: inout Data, with: Data)
 {
     let destLength = dest.count
-    // Wipe contents if needed.
+
+    // Initialize contents
     if (destLength > 0)
     {
         dest.withUnsafeMutableBytes {
             $0.initialize(to: 0, count: destLength)
         }
+        dest.removeAll()
     }
     
     guard srcLength > 0 && with.count > 0 else {
         return
     }
     
+    
     if (destLength < srcLength)
     {
+        // This may cause buffer reallocation.
         dest.reserveCapacity(srcLength)
     } // Otherwise we already have the needed capacity.
     
     var j = 0
     for i in 0 ..< srcLength
     {
-        dest[i] = src[i] ^ with[j]
+        dest.append(src[i] ^ with[j])
         j += 1
         if j >= with.count
         {
