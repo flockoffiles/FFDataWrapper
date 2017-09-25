@@ -10,6 +10,9 @@
 		A5063F8D1F73B29500CA4109 /* FFDataWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5063F831F73B29500CA4109 /* FFDataWrapper.framework */; };
 		A5063F921F73B29500CA4109 /* FFDataWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */; };
 		A5063F941F73B29500CA4109 /* FFDataWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = A5063F861F73B29500CA4109 /* FFDataWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
+		A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB81F740CF000F2F985 /* Data+Extensions.swift */; };
+		A55678BB1F755A1D00E87A59 /* FFOldDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +32,10 @@
 		A5063F8C1F73B29500CA4109 /* FFDataWrapperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFDataWrapperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperTests.swift; sourceTree = "<group>"; };
 		A5063F931F73B29500CA4109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5451BB51F73F04000F2F985 /* FFDataWrapper.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FFDataWrapper.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapper.swift; sourceTree = "<group>"; };
+		A5451BB81F740CF000F2F985 /* Data+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extensions.swift"; sourceTree = "<group>"; };
+		A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFOldDataWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,8 +78,12 @@
 		A5063F851F73B29500CA4109 /* FFDataWrapper */ = {
 			isa = PBXGroup;
 			children = (
-				A5063F861F73B29500CA4109 /* FFDataWrapper.h */,
 				A5063F871F73B29500CA4109 /* Info.plist */,
+				A5451BB51F73F04000F2F985 /* FFDataWrapper.playground */,
+				A5063F861F73B29500CA4109 /* FFDataWrapper.h */,
+				A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */,
+				A5451BB81F740CF000F2F985 /* Data+Extensions.swift */,
+				A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */,
 			);
 			path = FFDataWrapper;
 			sourceTree = "<group>";
@@ -148,6 +159,7 @@
 				TargetAttributes = {
 					A5063F821F73B29500CA4109 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					A5063F8B1F73B29500CA4109 = {
@@ -196,6 +208,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A55678BB1F755A1D00E87A59 /* FFOldDataWrapper.swift in Sources */,
+				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,
+				A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +349,7 @@
 		A5063F981F73B29500CA4109 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -347,6 +363,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapper;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -355,6 +372,7 @@
 		A5063F991F73B29500CA4109 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -376,6 +394,7 @@
 		A5063F9B1F73B29500CA4109 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5GTU4B8T74;
 				INFOPLIST_FILE = FFDataWrapperTests/Info.plist;
@@ -390,6 +409,7 @@
 		A5063F9C1F73B29500CA4109 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5GTU4B8T74;
 				INFOPLIST_FILE = FFDataWrapperTests/Info.plist;
