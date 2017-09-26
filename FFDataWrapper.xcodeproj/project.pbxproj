@@ -12,7 +12,7 @@
 		A5063F941F73B29500CA4109 /* FFDataWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = A5063F861F73B29500CA4109 /* FFDataWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
 		A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB81F740CF000F2F985 /* Data+Extensions.swift */; };
-		A55678BB1F755A1D00E87A59 /* FFOldDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */; };
+		A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,7 +35,7 @@
 		A5451BB51F73F04000F2F985 /* FFDataWrapper.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FFDataWrapper.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapper.swift; sourceTree = "<group>"; };
 		A5451BB81F740CF000F2F985 /* Data+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extensions.swift"; sourceTree = "<group>"; };
-		A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFOldDataWrapper.swift; sourceTree = "<group>"; };
+		A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperEncoders.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 				A5063F861F73B29500CA4109 /* FFDataWrapper.h */,
 				A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */,
 				A5451BB81F740CF000F2F985 /* Data+Extensions.swift */,
-				A55678BA1F755A1D00E87A59 /* FFOldDataWrapper.swift */,
+				A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */,
 			);
 			path = FFDataWrapper;
 			sourceTree = "<group>";
@@ -208,7 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A55678BB1F755A1D00E87A59 /* FFOldDataWrapper.swift in Sources */,
+				A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */,
 				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,
 				A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */,
 			);
