@@ -13,6 +13,7 @@
 		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
 		A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB81F740CF000F2F985 /* Data+Extensions.swift */; };
 		A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
+		A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874991F7A5EE5006BC98A /* FFDataRef.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapper.swift; sourceTree = "<group>"; };
 		A5451BB81F740CF000F2F985 /* Data+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extensions.swift"; sourceTree = "<group>"; };
 		A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperEncoders.swift; sourceTree = "<group>"; };
+		A5F874991F7A5EE5006BC98A /* FFDataRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataRef.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 				A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */,
 				A5451BB81F740CF000F2F985 /* Data+Extensions.swift */,
 				A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */,
+				A5F874991F7A5EE5006BC98A /* FFDataRef.swift */,
 			);
 			path = FFDataWrapper;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */,
+				A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */,
 				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,
 				A5451BB91F740CF000F2F985 /* Data+Extensions.swift in Sources */,
 			);
