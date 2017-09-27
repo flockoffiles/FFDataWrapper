@@ -96,21 +96,25 @@ public struct FFDataWrapper
     /// Data is converted back from its internal representation and is wiped after the closure is completed.
     ///
     /// - Parameter block: The closure to execute.
-    public func withDecodedData(_ block: (inout Data) -> Void)
+    @discardableResult
+    public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType
     {
         let dataLength = dataRef.length
         var decodedData = Data(repeating:0, count: dataLength)
 
         decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
-            // print("--- start decoder --- ")
             decoder(dataRef.dataBuffer, dataLength, destPtr, dataLength)
         })
         
-        block(&decodedData)
+        let result = try block(&decodedData)
         
         decodedData.resetBytes(in: 0 ..< decodedData.count)
+        
+        return result
     }
     
+    
+    /// Returns true if the wrapped data is empty; false otherwise.
     public var isEmpty: Bool
     {
         return dataRef.length == 0
