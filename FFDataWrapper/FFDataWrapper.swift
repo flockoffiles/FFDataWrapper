@@ -70,7 +70,7 @@ public struct FFDataWrapper
         self.decoder = coders.decoder
 
         let length = data.count
-        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
+        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: data.count == 0 ? 1 : data.count)
         dataRef = FFDataRef(dataBuffer: bufferPtr, length: length)
         
         if (length > 0)
@@ -89,6 +89,24 @@ public struct FFDataWrapper
     {
         let count = data.count
         self.init(data, FFDataWrapperEncoders.xorWithRandomVectorOfLength(count).coders)
+    }
+    
+    
+    /// Create a wrapper for an empty data value and use the specified pair of coders to convert to/from the internal representation.
+    ///
+    /// - Parameter coders: Pair of coders to use to convert to/from the internal representation.
+    public init(_ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    {
+        self.encoder = coders.encoder
+        self.decoder = coders.decoder
+        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
+        dataRef = FFDataRef(dataBuffer: bufferPtr, length: 0)
+    }
+    
+    /// Create a wrapper for an empty value and use the XOR transformation for internal representation (not really applied, just for consistency reasons).
+    public init()
+    {
+        self.init(FFDataWrapperEncoders.xorWithRandomVectorOfLength(1).coders)
     }
 
     
