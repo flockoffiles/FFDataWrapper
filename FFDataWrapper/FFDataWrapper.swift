@@ -139,4 +139,10 @@ public struct FFDataWrapper
     }
 }
 
-
+extension FFDataWrapper: CustomStringConvertible
+{
+    public var description: String {
+        let underlyingDataContent = type(of: dataRef).hexString(dataRef.dataBuffer, dataRef.length)
+        return "FFDataWrapper: \(underlyingDataContent)"
+    }
+}

@@ -3,11 +3,32 @@
 import UIKit
 @testable import FFDataWrapper
 
-var bytesPtr: UnsafeMutablePointer<UInt8>? = nil
+extension Data
+{
+    /// Convert data to a hex string
+    ///
+    /// - Returns: hex string representation of the data.
+    func hexString() -> String
+    {
+        var result = String()
+        result.reserveCapacity(self.count * 2)
+        [UInt8](self).forEach { (aByte) in
+            result += String(format: "%02X", aByte)
+        }
+        return result
+    }
+
+}
+
+
 let testString = "ABCDEFG"
+let testData = testString.data(using: .utf8)!
+testData.hexString()
 
-let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: 0)
+let w1 = FFDataWrapper(testData)
 
-print(bufferPtr)
+var decoded = w1.withDecodedData { $0 }
+decoded.hexString()
+
 
 

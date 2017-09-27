@@ -35,3 +35,22 @@ internal class FFDataRef
     }
 }
 
+extension FFDataRef: CustomStringConvertible
+{
+    static func hexString(_ dataBuffer: UnsafePointer<UInt8>, _ length: Int) -> String
+    {
+        var result = String()
+        result.reserveCapacity(length * 2)
+        for i in 0 ..< length
+        {
+            result += String(format: "%02X", dataBuffer[i])
+        }
+        return result
+    }
+
+    public var description: String {
+        let content = type(of: self).hexString(dataBuffer, length)
+        return "FFDataRef: \(content)"
+    }
+}
+
