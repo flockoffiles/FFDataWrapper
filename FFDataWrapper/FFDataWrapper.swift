@@ -109,7 +109,11 @@ public struct FFDataWrapper
         block(&decodedData)
         
         decodedData.resetBytes(in: 0 ..< decodedData.count)
-        
+    }
+    
+    public var isEmpty: Bool
+    {
+        return dataRef.length == 0
     }
 }
 
