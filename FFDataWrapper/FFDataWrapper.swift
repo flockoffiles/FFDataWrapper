@@ -137,6 +137,12 @@ public struct FFDataWrapper
     {
         return dataRef.length == 0
     }
+    
+    /// Returns the length of the underlying data
+    public var length: Int
+    {
+        return dataRef.length
+    }
 }
 
 extension FFDataWrapper: CustomStringConvertible
