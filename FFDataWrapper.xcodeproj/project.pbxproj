@@ -10,6 +10,7 @@
 		A5063F8D1F73B29500CA4109 /* FFDataWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5063F831F73B29500CA4109 /* FFDataWrapper.framework */; };
 		A5063F921F73B29500CA4109 /* FFDataWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */; };
 		A5063F941F73B29500CA4109 /* FFDataWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = A5063F861F73B29500CA4109 /* FFDataWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A53389D41F7E6DA7004E8A6C /* FFDataWrapperUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */; };
 		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
 		A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
 		A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874991F7A5EE5006BC98A /* FFDataRef.swift */; };
@@ -32,6 +33,7 @@
 		A5063F8C1F73B29500CA4109 /* FFDataWrapperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFDataWrapperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperTests.swift; sourceTree = "<group>"; };
 		A5063F931F73B29500CA4109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperUtil.swift; sourceTree = "<group>"; };
 		A5451BB51F73F04000F2F985 /* FFDataWrapper.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FFDataWrapper.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapper.swift; sourceTree = "<group>"; };
 		A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperEncoders.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */,
 				A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */,
 				A5F874991F7A5EE5006BC98A /* FFDataRef.swift */,
+				A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */,
 			);
 			path = FFDataWrapper;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */,
 				A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */,
 				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,
+				A53389D41F7E6DA7004E8A6C /* FFDataWrapperUtil.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
