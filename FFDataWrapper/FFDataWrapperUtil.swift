@@ -11,7 +11,7 @@ import Foundation
 public extension FFDataWrapper
 {
     /// Wipe the contents of data by zeroing out internal storage.
-    ///
+    /// This ONLY works if there are no more references to the data storage of the pertaining data.
     /// - Parameter data: The data to wipe
     public static func wipe(_ data: inout Data)
     {
@@ -20,7 +20,7 @@ public extension FFDataWrapper
     }
 
     /// Try to wipe to contents of the underlying storage by replacing the characters with '\0'
-    /// (That's the best that we can hope for given current Swift's implementation. It works at least for ASCII and UTF8 strings)
+    /// This is NOT guaranteed to work, and might work only if there are no more references to the string's backing storage.
     /// - Parameter string: The string to wipe.
     public static func wipe(_ string: inout String)
     {

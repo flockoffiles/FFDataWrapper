@@ -16,7 +16,7 @@ public enum FFDataWrapperEncoders
     /// XOR with the random vector of the given legth.
     case xorWithRandomVectorOfLength(Int)
     
-    var coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
+    public var coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
         switch self
         {
         case .identity:

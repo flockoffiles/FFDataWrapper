@@ -12,9 +12,9 @@ import Foundation
 internal class FFDataRef
 {
     /// Pointer to the data buffer holding the internal representation of the wrapper data.
-    var dataBuffer: UnsafeMutablePointer<UInt8>
+    let dataBuffer: UnsafeMutablePointer<UInt8>
     /// Length of the dataBuffer in bytes.
-    var length: Int
+    let length: Int
     
     /// Create a buffer holder with the given initialized buffer.
     ///
