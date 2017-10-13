@@ -26,60 +26,8 @@ extension Data
     
 }
 
-func address(o: UnsafeRawPointer) -> UnsafeRawPointer
-{
-    return o
-}
-
-
 class FFDataWrapperTests: XCTestCase
 {
-    class DeinitLogger
-    {
-        let name: String
-        init(name: String)
-        {
-            self.name = name
-        }
-        
-        deinit {
-            print("---- deinit for: \(name)")
-        }
-    }
-    
-    struct DummyStruct
-    {
-        let dummy: Int = 123456
-    }
-    
-    struct TestStruct
-    {
-        var dummy = DummyStruct()
-//        var classField1 = DeinitLogger(name: "classField1")
-//        var structField1: [DeinitLogger] = [DeinitLogger(name: "structField1")]
-//        var classField2 = DeinitLogger(name: "classField2")
-//        var data: Data
-        
-        
-        init(string: String)
-        {
-//            let length = string.lengthOfBytes(using: .utf8)
-//            print("length = \(length)")
-//            let cString = string.utf8CString
-//            data = Data(count: length)
-//            data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
-//                for i in 0 ..< length
-//                {
-//                    bytes[i] = UInt8(cString[i])
-//                }
-//            }
-//            print("data = \(data.hexString())")
-            let dummyAddrString = String(format:"0x%x", Int(bitPattern:address(o: &dummy)))
-            print("address of dummy = \(dummyAddrString)")
-        }
-    }
-    
-
     
     override func setUp() {
         super.setUp()
@@ -91,21 +39,48 @@ class FFDataWrapperTests: XCTestCase
         super.tearDown()
     }
     
-    let testString = "ABCD"
+    let testString = "ABCDEFGH"
+    let shortTestString = "A"
+    let utf16TestString = "AB❤️💛❌✅"
+    let wipeCharacter = UInt8(46)
 
-    func testAddresses()
+    func testUnsafeWipeUtf8String()
     {
-        var testStruct = TestStruct(string: testString)
-        let testStructAddress = address(o: &testStruct)
-        print(String(format:"0x%x", Int(bitPattern: testStructAddress)))
-        print(String(format:"0x%x", Int(bitPattern: address(o: &testStruct.dummy))))
-        let dummy = testStructAddress.assumingMemoryBound(to: TestStruct.self).pointee.dummy.dummy
-        print("dummy = \(dummy)")
+        let expectedWipedString = String(testString.map { _ in Character(UnicodeScalar(wipeCharacter)) })
+        var testUtf8String = String()
+        testUtf8String.append(testString)
+        
+        FFDataWrapper.unsafeWipe(&testUtf8String, with: wipeCharacter)
+        
+        XCTAssertEqual(testUtf8String, expectedWipedString)
+    }
+    
+    func testUnsafeWipeShortUtf8String()
+    {
+        let expectedWipedString = String(shortTestString.map { _ in Character(UnicodeScalar(wipeCharacter)) })
+        var testUtf8String = String()
+        testUtf8String.append(shortTestString)
+        
+        FFDataWrapper.unsafeWipe(&testUtf8String, with: wipeCharacter)
+        
+        XCTAssertEqual(testUtf8String, expectedWipedString)
+    }
+    
+    func testUnsafeWipeUtf16String()
+    {
+        var testUtf16String = String()
+        testUtf16String.append(utf16TestString)
+        
+        FFDataWrapper.unsafeWipe(&testUtf16String, with: wipeCharacter)
+        
+        let elements = Array(testUtf16String.utf16)
+        elements.forEach {
+            XCTAssertEqual($0, UInt16(wipeCharacter) * 256 + UInt16(wipeCharacter))
+        }
     }
     
     func testWrapStringWithXOR()
     {
-        
         let wrapper1 = FFDataWrapper(testString)
         
         var recoveredString = ""
