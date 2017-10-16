@@ -112,7 +112,8 @@ public struct FFDataWrapper
     
     /// Execute the given closure with wrapped data.
     /// Data is converted back from its internal representation and is wiped after the closure is completed.
-    ///
+    /// Wiping of the data will succeed ONLY if the data is not passed outside the closure (i.e. if there are no additional references to it
+    /// by the time the closure completes).
     /// - Parameter block: The closure to execute.
     @discardableResult
     public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType

@@ -146,5 +146,48 @@ class FFDataWrapperTests: XCTestCase
         }
     }
     
+    fileprivate struct FFTestData
+    {
+        var backing : FFTestDataStorage
+    }
+    
+    fileprivate class FFTestDataStorage
+    {
+        var bytes: UnsafeMutableRawPointer? = nil
+        var length: Int = 0
+    }
+    
+    /// Here we test that the temporary data which is given to the closure gets really wiped.
+    /// This is the case where the data is NOT copied out.
+    func testWipeAfterDecode()
+    {
+        let testString = "ABCDEF"
+        let testData = testString.data(using: .utf8)!
+        let testDataLength = testData.count
+        
+        let dataWrapper = FFDataWrapper(testData)
+        var copiedBacking = Data()
+        
+        guard let bytes: UnsafeMutableRawPointer = dataWrapper.withDecodedData({ (data: inout Data) -> UnsafeMutableRawPointer? in
+            let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFTestData.self).pointee.backing
+            if let bytes = backing.bytes
+            {
+                copiedBacking = Data(bytes: bytes, count: data.count)
+            }
+            return backing.bytes
+        }) else {
+            XCTFail("Expecting to have a data storage")
+            return
+        }
+        
+        let copiedBackingString = String(data: copiedBacking, encoding: .utf8)
+        XCTAssertEqual(copiedBackingString, testString)
+        let reconstructedBacking = Data(bytes: bytes, count: testDataLength)
+        
+        let expectedReconstructedBacking = Data.init(count: testDataLength)
+        XCTAssertEqual(reconstructedBacking, expectedReconstructedBacking)
+    }
+    
+    
     
 }
