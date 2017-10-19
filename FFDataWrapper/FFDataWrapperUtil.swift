@@ -16,7 +16,6 @@ public extension FFDataWrapper
     public static func wipe(_ data: inout Data)
     {
         data.resetBytes(in: 0 ..< data.count)
-        data.removeAll()
     }
 
     /// Try to wipe to contents of the underlying storage by replacing the characters with '\0'
@@ -28,7 +27,6 @@ public extension FFDataWrapper
         string.withMutableCharacters {
             $0.replaceSubrange($0.startIndex ..< $0.endIndex, with: empty)
         }
-        string.removeAll()
     }
 
 }

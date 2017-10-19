@@ -79,6 +79,19 @@ class FFDataWrapperTests: XCTestCase
         }
     }
     
+    func testUnsafeWipeSwiftMutableData()
+    {
+        var data = Data()
+        data.append(testString.data(using: .utf8)!)
+        
+        let expectedData = Data(count: data.count)
+        
+        FFDataWrapper.unsafeWipe(&data)
+        
+        XCTAssertEqual(data, expectedData)
+    }
+    
+    
     func testWrapStringWithXOR()
     {
         let wrapper1 = FFDataWrapper(testString)
@@ -146,17 +159,6 @@ class FFDataWrapperTests: XCTestCase
         }
     }
     
-    fileprivate struct FFTestData
-    {
-        var backing : FFTestDataStorage
-    }
-    
-    fileprivate class FFTestDataStorage
-    {
-        var bytes: UnsafeMutableRawPointer? = nil
-        var length: Int = 0
-    }
-    
     /// Here we test that the temporary data which is given to the closure gets really wiped.
     /// This is the case where the data is NOT copied out.
     func testWipeAfterDecode()
@@ -169,7 +171,7 @@ class FFDataWrapperTests: XCTestCase
         var copiedBacking = Data()
         
         guard let bytes: UnsafeMutableRawPointer = dataWrapper.withDecodedData({ (data: inout Data) -> UnsafeMutableRawPointer? in
-            let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFTestData.self).pointee.backing
+            let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFData.self).pointee.backing
             if let bytes = backing.bytes
             {
                 copiedBacking = Data(bytes: bytes, count: data.count)
@@ -188,6 +190,59 @@ class FFDataWrapperTests: XCTestCase
         XCTAssertEqual(reconstructedBacking, expectedReconstructedBacking)
     }
     
+    func testUnsafeWipeNSMutableData()
+    {
+        var nsData = NSMutableData()
+        var testData = testString.data(using: .utf8)!
+        let length = testData.count
+        testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
+            nsData.append(bytes, length: length)
+        }
+        
+        let nsDataBytes = nsData.bytes
+        
+        var data = nsData as Data
+        FFDataWrapper.unsafeWipe(&data)
+        
+        let expectedData = Data(count: length)
+        
+        XCTAssertEqual(data, expectedData)
+        var expectedNSData = NSMutableData()
+        expectedData.withUnsafeBytes {
+            expectedNSData.append($0, length: length)
+        }
+        
+        // TODO: although we can wipe the native Swift data backing store,
+        // we cannot get to the original NSString yet.
+        // XCTAssertEqual(nsData, expectedNSData)
+    }
     
+    struct StructWithSensitiveData: Decodable
+    {
+        var name: String
+        var sensitive: FFDataWrapper
+    }
+    
+    func testJSONDecoding()
+    {
+        let testJSONString = """
+{
+   \"name\": \"Test name\",
+   \"sensitive\": \"Test sensitive\"
+}
+"""
+        let jsonData = testJSONString.data(using: .utf8)!
+        
+        let decoder = TestJSONDecoder()
+        decoder.userInfo = [FFDataWrapper.originalDataTypeInfoKey: String.self]
+        
+        let decoded = try! decoder.decode(StructWithSensitiveData.self, from: jsonData)
+        
+        print(decoded)
+        decoded.sensitive.withDecodedData {
+            print(String(data: $0, encoding: .utf8)!)
+        }
+        
+    }
     
 }

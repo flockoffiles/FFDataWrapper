@@ -13,6 +13,7 @@
 		A53389D41F7E6DA7004E8A6C /* FFDataWrapperUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */; };
 		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
 		A5A01D2C1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A01D2B1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift */; };
+		A5BFBBBA1F95032F00FBFB7D /* FFJSONEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BFBBB91F95032F00FBFB7D /* FFJSONEncoder.swift */; };
 		A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
 		A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874991F7A5EE5006BC98A /* FFDataRef.swift */; };
 		A5FAD5001F8E15AE00A51B85 /* FFDataWrapper+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FAD4FF1F8E15AE00A51B85 /* FFDataWrapper+Codable.swift */; };
@@ -39,6 +40,7 @@
 		A5451BB51F73F04000F2F985 /* FFDataWrapper.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FFDataWrapper.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapper.swift; sourceTree = "<group>"; };
 		A5A01D2B1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapperUtil+Unsafe.swift"; sourceTree = "<group>"; };
+		A5BFBBB91F95032F00FBFB7D /* FFJSONEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFJSONEncoder.swift; sourceTree = "<group>"; };
 		A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataWrapperEncoders.swift; sourceTree = "<group>"; };
 		A5F874991F7A5EE5006BC98A /* FFDataRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFDataRef.swift; sourceTree = "<group>"; };
 		A5FAD4FF1F8E15AE00A51B85 /* FFDataWrapper+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Codable.swift"; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			children = (
 				A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */,
 				A5063F931F73B29500CA4109 /* Info.plist */,
+				A5BFBBB91F95032F00FBFB7D /* FFJSONEncoder.swift */,
 			);
 			path = FFDataWrapperTests;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5BFBBBA1F95032F00FBFB7D /* FFJSONEncoder.swift in Sources */,
 				A5063F921F73B29500CA4109 /* FFDataWrapperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

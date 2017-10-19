@@ -22,12 +22,68 @@ public extension FFDataWrapper
     ///   - value: The byte value to use to write to the backing store. The default is 46 ('.' character)
     public static func unsafeWipe(_ string: inout String, with value: UInt8 = 32)
     {
+        guard !string.isEmpty else { return }
         let core = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&string).assumingMemoryBound(to: FFString.self).pointee.core
         guard let basePtr = core.baseAddress, basePtr.isWritableMemory() else {
             return
         }
         
         basePtr.assumingMemoryBound(to: UInt8.self).initialize(to: value, count: core.elementWidth * core.count)
+    }
+    
+    
+    /// This function will attempt to wipe the backing store of the given mutable data.
+    /// Although Swift data are value types, they are copy-on-write, meaning that multiple data structs can share the same backing store.
+    /// If you are using this method, you must be sure that:
+    /// - There are no more copies of data floating around for the data you want to wipe.
+    /// - The data itself has a mutable backing store - meaning that it was NOT assigned from some constant read-only data buffer (e.g. located in the code segment).
+    /// This function checks if the backing store is writable. Wiping will be skipped if it's NOT.
+    /// - Parameters:
+    ///   - data: The data whose backing store to wipe.
+    ///   - value: The byte value to use to overwrite the backing store. The default is 0.
+    public static func unsafeWipe(_ data: inout Data, with value: UInt8 = 0)
+    {
+        let length = data.count
+        guard length > 0 else { return }
+        // Depending on how the data was created, the unsafe pointer passed here is either pointing to the original backing store
+        // or to a temporary copy.
+        // A temporary copy is only created if the data was created with a custom reference (https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/Data.swift)
+        // We currently DON'T support this case. (TODO)
+        
+        let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFData.self).pointee.backing
+        
+        let wipeNativeBuffer = { (bytes: UnsafePointer<UInt8>) -> Void in
+            let mutableRawBytes = UnsafeMutableRawPointer(OpaquePointer(bytes))
+            guard mutableRawBytes.isWritableMemory() else { return }
+            let mutableBytes = mutableRawBytes.assumingMemoryBound(to: UInt8.self)
+            for i in 0 ..< length
+            {
+                mutableBytes[i] = value
+            }
+        }
+        data.withUnsafeBytes(wipeNativeBuffer)
+    }
+    
+    
+    /// This function will attempt to wipe the bytes of an NSData or NSMutableData
+    /// If you use this method, you must be sure that the underlying memory is writable (although the function checks for that).
+    ///
+    /// Limitations: this function may NOT work with custom implementations of NSData.
+    /// - Parameters:
+    ///   - nsData: NSData object whose contents to wipe.
+    ///   - value: The byte value to use to overwrite the backing store. The default is 0.
+    public static func unsafeWipe(_ nsData: NSData, with value: UInt8 = 0)
+    {
+        let length = nsData.length
+        guard length > 0 else { return }
+        
+        let mutableRawBytes = UnsafeMutableRawPointer(OpaquePointer(nsData.bytes))
+        guard mutableRawBytes.isWritableMemory() else { return }
+        let mutableBytes = mutableRawBytes.assumingMemoryBound(to: UInt8.self)
+        for i in 0 ..< length
+        {
+            mutableBytes[i] = value
+        }
     }
 }
 
@@ -36,7 +92,8 @@ extension UnsafeMutableRawPointer
     /// Check if the memory to which this pointer points is writable.
     func isWritableMemory() -> Bool
     {
-        var vm_address = vm_address_t(bitPattern:self)
+        
+        var vm_address = vm_address_t(UInt(bitPattern:self))
         var vm_size = vm_size_t(1)
         var vm_region_info = vm_region_basic_info_data_t()
         let vm_region_info_ptr = { (_ o: UnsafeMutableRawPointer) -> vm_region_info_t in o.assumingMemoryBound(to: Int32.self) } (&vm_region_info)
@@ -56,15 +113,44 @@ extension UnsafeMutableRawPointer
     }
 }
 
+/// Internal representation of Data.
+/// Must match https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/Data.swift
+struct FFData
+{
+    var backing : FFDataStorage
+}
+
+/// Internal types of data backing.
+/// See: https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/Data.swift
+enum FFDataBacking
+{
+    case swift
+    case immutable(NSData) // This will most often (perhaps always) be NSConcreteData
+    case mutable(NSMutableData) // This will often (perhaps always) be NSConcreteMutableData
+    case customReference(NSData) // tracks data references that are only known to be immutable
+    case customMutableReference(NSMutableData) // tracks data references that are known to be mutable
+}
+
+/// Internal representation of Data storage
+/// Must match https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/Data.swift
+class FFDataStorage
+{
+    var bytes: UnsafeMutableRawPointer? = nil
+    var length: Int = 0
+    var capacity: Int = 0
+    var needToZero: Bool = false
+    var deallocator: ((UnsafeMutableRawPointer, Int) -> Void)?
+    var backing: FFDataBacking = .swift
+}
 
 /// Mimics the structure of Swift native string
-fileprivate struct FFString
+struct FFString
 {
     var core: FFStringCore
 }
 
 /// Mimics the structure of Swift string core.
-fileprivate struct FFStringCore
+struct FFStringCore
 {
     var baseAddress: UnsafeMutableRawPointer?
     var countAndFlags: UInt
