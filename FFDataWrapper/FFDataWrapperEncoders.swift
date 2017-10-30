@@ -33,15 +33,15 @@ public enum FFDataWrapperEncoders
     
     internal static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder
     {
-        return { (src: UnsafePointer<UInt8>, srcLength: Int, dest: UnsafeMutablePointer<UInt8>, destLength: Int) in
-            xor(src: src, srcLength: srcLength, dest: dest, destLength: destLength, with: vector)
+        return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
+            xor(src: src, dest: dest, with: vector)
         }
     }
     
     internal static func identityFunction() -> FFDataWrapperCoder
     {
-        return { (src: UnsafePointer<UInt8>, srcLength: Int, dest: UnsafeMutablePointer<UInt8>, destLength: Int) in
-            justCopy(src: src, srcLength: srcLength, dest: dest, destLength: destLength)
+        return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
+            justCopy(src: src, dest: dest)
         }
     }
 }
@@ -54,19 +54,19 @@ extension FFDataWrapperEncoders
     ///   - src: Source data to transform.
     ///   - srcLength: Length of the source data.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
-    internal static func justCopy(src: UnsafePointer<UInt8>, srcLength: Int, dest: UnsafeMutablePointer<UInt8>, destLength: Int)
+    internal static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>)
     {
         // Wipe contents if needed.
-        if (destLength > 0)
+        if (dest.count > 0)
         {
-            dest.initialize(to: 0, count: destLength)
+            dest.baseAddress!.initialize(to: 0, count: dest.count)
         }
         
-        guard srcLength > 0 && destLength >= srcLength else {
+        guard src.count > 0 && dest.count >= src.count else {
             return
         }
-        
-        dest.assign(from: src, count: srcLength)
+
+        dest.baseAddress!.assign(from: src.baseAddress!, count: src.count)
     }
     
 
@@ -75,25 +75,25 @@ extension FFDataWrapperEncoders
     ///
     /// - Parameters:
     ///   - src: Source data to transform.
-    ///   - srcLength: Length of the source data.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
     ///   - with: Vector to XOR with. If the vector is shorter than the original data, it will be wrapped around.
-    internal static func xor(src: UnsafePointer<UInt8>, srcLength: Int, dest: UnsafeMutablePointer<UInt8>, destLength: Int, with: Data)
+    internal static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data)
     {
         // Initialize contents
-        if (destLength > 0)
+        if (dest.count > 0)
         {
-            dest.initialize(to: 0, count: destLength)
+            dest.baseAddress!.initialize(to: 0, count: dest.count)
         }
         
-        guard srcLength > 0 && destLength >= srcLength else {
+        guard src.count > 0 && dest.count >= src.count else {
             return
         }
         
         var j = 0
-        for i in 0 ..< srcLength
+        for i in 0 ..< dest.count
         {
-            dest[i] = src[i] ^ with[j]
+            let srcByte: UInt8 = i < src.count ? src[i] : 0
+            dest[i] = srcByte ^ with[j]
             j += 1
             if j >= with.count
             {

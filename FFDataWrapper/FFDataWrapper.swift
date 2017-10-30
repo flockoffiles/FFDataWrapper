@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias FFDataWrapperCoder = (UnsafePointer<UInt8>, Int, UnsafeMutablePointer<UInt8>, Int) -> Void
+public typealias FFDataWrapperCoder = (UnsafeBufferPointer<UInt8>, UnsafeMutableBufferPointer<UInt8>) -> Void
 
 /// FFDataWrapper is a struct which wraps a piece of data and provides some custom internal representation for it.
 /// Conversions between original and internal representations can be specified with encoder and decoder closures.
@@ -44,7 +44,8 @@ public struct FFDataWrapper
         {
             // Obfuscate the data
             utf8.withUnsafeBytes {
-                coders.encoder($0.baseAddress!.assumingMemoryBound(to: UInt8.self), length, self.dataRef.dataBuffer, length)
+                coders.encoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count:length),
+                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count:length))
             }
         }
     }
@@ -77,9 +78,48 @@ public struct FFDataWrapper
         {
             // Encode the data
             data.withUnsafeBytes {
-                coders.encoder($0, length, self.dataRef.dataBuffer, length)
+                coders.encoder(UnsafeBufferPointer(start: $0, count: length),
+                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count: length))
             }
         }
+    }
+    
+    
+    /// Create a wrapper with the given capacity and the given initializer closure.
+    ///
+    /// - Parameters:
+    ///   - capacity: The desired capacity.
+    ///   - initializer: Initializer closure to set initial contents.
+    ///   - coders: Pair of coders to use to convert to/from the internal representation.
+    public init(capacity: Int,
+                _ initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void,
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    {
+        self.encoder = coders.encoder
+        self.decoder = coders.decoder
+        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity == 0 ? 1 : capacity)
+        dataRef = FFDataRef(dataBuffer: bufferPtr, length: capacity)
+        
+        if (capacity > 0)
+        {
+            let tempBufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
+            initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: capacity))
+            coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: capacity),
+                           UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count: capacity))
+            tempBufferPtr.initialize(to: 0, count: capacity)
+            tempBufferPtr.deallocate(capacity: capacity)
+        }
+    }
+    
+    
+    /// Create a wrapper with the given capacity and the given initializer closure.
+    /// Use the XOR transformation for internal representation.
+    /// - Parameters:
+    ///   - capacity: The desired capacity.
+    ///   - initializer: Initializer closure to set initial contents.
+    public init(capacity: Int, _ initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void)
+    {
+        self.init(capacity: capacity, initializer, FFDataWrapperEncoders.xorWithRandomVectorOfLength(capacity).coders)
     }
     
     /// Create a wrapper with the given data content and use the XOR transformation for internal representation.
@@ -122,7 +162,7 @@ public struct FFDataWrapper
         var decodedData = Data(repeating:0, count: dataLength)
 
         decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
-            decoder(dataRef.dataBuffer, dataLength, destPtr, dataLength)
+            decoder(UnsafeBufferPointer(start: dataRef.dataBuffer, count: dataLength), UnsafeMutableBufferPointer(start: destPtr, count: dataLength))
         })
         
         let result = try block(&decodedData)

@@ -72,7 +72,7 @@ var asciiString = "ABCDEFGH"
 let asciiStringPtr = address(&asciiString)
 let asciiStringCore = asciiStringPtr.assumingMemoryBound(to: FFString.self).pointee.core
 let width = asciiStringCore.elementWidth
-let length = asciiStringCore.count
+var length = asciiStringCore.count
 
 var recoveredString: String = String(bytesNoCopy: asciiStringCore.baseAddress!, length: length, encoding: String.Encoding.utf8, freeWhenDone: false)!
 
@@ -109,7 +109,12 @@ recoveredUnicodeString = String(bytesNoCopy: unicodeBuffer, length:unicodeString
 let nsString = NSString(format: "ABCDEF")
 let cocoaString: String = nsString as String
 
-
+var nsData = NSMutableData()
+var testData = "ABCDEF".data(using: .utf8)!
+length = testData.count
+testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
+    nsData.append(bytes, length: length)
+}
 
 
 

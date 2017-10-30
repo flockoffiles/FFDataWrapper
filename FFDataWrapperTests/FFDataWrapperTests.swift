@@ -171,12 +171,15 @@ class FFDataWrapperTests: XCTestCase
         var copiedBacking = Data()
         
         guard let bytes: UnsafeMutableRawPointer = dataWrapper.withDecodedData({ (data: inout Data) -> UnsafeMutableRawPointer? in
-            let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFData.self).pointee.backing
-            if let bytes = backing.bytes
+            let dataAddress = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data)
+            let backingPtr = dataAddress.assumingMemoryBound(to: UnsafeMutableRawPointer.self).pointee
+            // We cannot instantiate FFDataStorage by pointee here because it will mess up the memory!
+            if let bytes = backingPtr.advanced(by: MemoryLayout<FFClassHeader>.size).assumingMemoryBound(to: UnsafeMutableRawPointer?.self).pointee
             {
                 copiedBacking = Data(bytes: bytes, count: data.count)
+                return bytes
             }
-            return backing.bytes
+            return nil
         }) else {
             XCTFail("Expecting to have a data storage")
             return
@@ -192,25 +195,30 @@ class FFDataWrapperTests: XCTestCase
     
     func testUnsafeWipeNSMutableData()
     {
-        var nsData = NSMutableData()
+        let nsData = NSMutableData()
         var testData = testString.data(using: .utf8)!
         let length = testData.count
         testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
             nsData.append(bytes, length: length)
         }
         
-        let nsDataBytes = nsData.bytes
+        // let nsDataBytes = nsData.bytes
         
         var data = nsData as Data
+        var data2: Data?
+        Data._forceBridgeFromObjectiveC(nsData, result: &data2)
+        // var bridgedNSData = data as NSData
+        // var bridgedNSData2 = data._bridgeToObjectiveC()
         FFDataWrapper.unsafeWipe(&data)
         
         let expectedData = Data(count: length)
         
         XCTAssertEqual(data, expectedData)
-        var expectedNSData = NSMutableData()
+        let expectedNSData = NSMutableData()
         expectedData.withUnsafeBytes {
             expectedNSData.append($0, length: length)
         }
+        
         
         // TODO: although we can wipe the native Swift data backing store,
         // we cannot get to the original NSString yet.

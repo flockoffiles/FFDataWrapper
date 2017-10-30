@@ -49,9 +49,6 @@ public extension FFDataWrapper
         // or to a temporary copy.
         // A temporary copy is only created if the data was created with a custom reference (https://github.com/apple/swift-corelibs-foundation/blob/master/Foundation/Data.swift)
         // We currently DON'T support this case. (TODO)
-        
-        let backing = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data).assumingMemoryBound(to: FFData.self).pointee.backing
-        
         let wipeNativeBuffer = { (bytes: UnsafePointer<UInt8>) -> Void in
             let mutableRawBytes = UnsafeMutableRawPointer(OpaquePointer(bytes))
             guard mutableRawBytes.isWritableMemory() else { return }
@@ -111,6 +108,12 @@ extension UnsafeMutableRawPointer
         }
         return (vm_region_info.protection & VM_PROT_WRITE) != 0
     }
+}
+
+struct FFClassHeader
+{
+    let isa: UnsafeRawPointer
+    let retainCounts: UInt64
 }
 
 /// Internal representation of Data.
