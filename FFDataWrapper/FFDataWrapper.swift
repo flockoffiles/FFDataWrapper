@@ -188,8 +188,52 @@ public struct FFDataWrapper
 
 extension FFDataWrapper: CustomStringConvertible
 {
+    public static func hexString(_ data: Data) -> String
+    {
+        var result = String()
+        result.reserveCapacity(data.count * 2)
+        for i in 0 ..< data.count
+        {
+            result += String(format: "%02X", data[i])
+        }
+        return result
+    }
+
+    func underlyingDataString() -> String
+    {
+        return self.withDecodedData { decodedData -> String in
+            if let dataAsString = String(data: decodedData, encoding: .utf8)
+            {
+                return dataAsString
+            }
+            return FFDataWrapper.hexString(decodedData)
+        }
+    }
+    
     public var description: String {
-        let underlyingDataContent = type(of: dataRef).hexString(dataRef.dataBuffer, dataRef.length)
-        return "FFDataWrapper: \(underlyingDataContent)"
+        return "FFDataWrapper: \(underlyingDataString())"
     }
 }
+
+extension FFDataWrapper: CustomDebugStringConvertible
+{
+    public var debugDescription: String {
+        var result = "FFDataWrapper:\n"
+        result += "Underlying data: \"\(underlyingDataString())\"\n"
+        result += "dataRef: \(String(reflecting:dataRef))\n"
+        result += "encoder: \(String(reflecting:encoder))\n"
+        result += "decoder: \(String(reflecting:decoder))"
+        return result
+    }
+}
+
+extension FFDataWrapper: CustomPlaygroundQuickLookable
+{
+    public var customPlaygroundQuickLook: PlaygroundQuickLook
+    {
+        return .text(self.description)
+    }
+}
+
+
+

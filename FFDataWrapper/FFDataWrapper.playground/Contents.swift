@@ -116,6 +116,8 @@ testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
     nsData.append(bytes, length: length)
 }
 
+let testWrapper = FFDataWrapper("Test underlying string")
+print(String(reflecting:testWrapper))
 
 
 
