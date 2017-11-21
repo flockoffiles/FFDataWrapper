@@ -12,26 +12,22 @@ import Foundation
 internal class FFDataRef
 {
     /// Pointer to the data buffer holding the internal representation of the wrapper data.
-    let dataBuffer: UnsafeMutablePointer<UInt8>
-    /// Length of the dataBuffer in bytes.
-    let length: Int
+    let dataBuffer: UnsafeMutableBufferPointer<UInt8>
     
     /// Create a buffer holder with the given initialized buffer.
     ///
     /// - Parameters:
-    ///   - dataBuffer: The relevant data buffer.
     ///   - length: Actual buffer length.
-    init(dataBuffer: UnsafeMutablePointer<UInt8>, length: Int)
+    init(length: Int)
     {
-        self.dataBuffer = dataBuffer
-        self.length = length
+        self.dataBuffer = UnsafeMutableBufferPointer(start: UnsafeMutablePointer<UInt8>.allocate(capacity: length), count: length)
     }
     
     deinit
     {
         // Explicitly clear the buffer (important)!
-        dataBuffer.initialize(to: 0, count: length)
-        dataBuffer.deallocate(capacity: length)
+        dataBuffer.baseAddress!.initialize(to: 0, count: dataBuffer.count)
+        dataBuffer.baseAddress!.deallocate(capacity: dataBuffer.count)
     }
 }
 
@@ -49,7 +45,7 @@ extension FFDataRef: CustomStringConvertible
     }
 
     public var description: String {
-        let content = type(of: self).hexString(dataBuffer, length)
+        let content = type(of: self).hexString(dataBuffer.baseAddress!, dataBuffer.count)
         return "FFDataRef: \(content)"
     }
 }

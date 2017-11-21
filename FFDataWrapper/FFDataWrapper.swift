@@ -17,136 +17,134 @@ public struct FFDataWrapper
     /// Class holding the data buffer and responsible for wiping the data when FFDataWrapper is destroyed.
     internal let dataRef: FFDataRef
     
-    /// Closure to convert external representation to internal.
-    internal let encoder: FFDataWrapperCoder
-    
-    /// Closure to convert internal representation to external.
-    internal let decoder: FFDataWrapperCoder
+    /// Closures to convert external representation to internal and back
+    internal let coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)
     
     /// Initialize the data wrapper with the given string content and a pair of coder/decoder to convert between representations.
     ///
     /// - Parameters:
     ///   - string: The string data to wrap. The string gets converted to UTF8 data before being fed to the encoder closure.
-    ///   - coders: The encoder/decoder pair which performs the conversion between external and internal representations.
-    public init(_ string: String, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    ///   - coders: The encoder/decoder pair which performs the conversion between external and internal representations. If nil, the default XOR coders will be used.
+    public init(_ string: String, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
     {
-        self.encoder = coders.encoder
-        self.decoder = coders.decoder
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(string.utf8.count).coders
         
         let utf8 = string.utf8CString
         let length = string.lengthOfBytes(using: .utf8) // utf8.count also accounts for the last 0 byte.
 
-        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
-        dataRef = FFDataRef(dataBuffer: bufferPtr, length: length)
+        self.dataRef = FFDataRef(length: length)
         
         // If length is 0 there may not be a pointer to the string content
         if (length > 0)
         {
             // Obfuscate the data
             utf8.withUnsafeBytes {
-                coders.encoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count:length),
-                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count:length))
+                self.coders.encoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count:length),
+                                    UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count:length))
             }
         }
     }
-    
-    
-    /// Create a wrapper with the given string content and use the XOR transformation for internal representation.
-    /// (Good for simple obfuscation).
-    /// - Parameter string: The string whose contents to wrap.
-    public init(_ string: String)
-    {
-        self.init(string, FFDataWrapperEncoders.xorWithRandomVectorOfLength(string.utf8.count).coders)
-    }
-    
     
     /// Create a wrapper with the given data content and use the specified pair of coders to convert to/from the internal representation.
     ///
     /// - Parameters:
     ///   - data: The data to wrap.
-    ///   - coders: Pair of coders to use to convert to/from the internal representation.
-    public init(_ data: Data, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    ///   - coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
+    public init(_ data: Data, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
     {
-        self.encoder = coders.encoder
-        self.decoder = coders.decoder
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(data.count).coders
 
-        let length = data.count
-        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: data.count == 0 ? 1 : data.count)
-        dataRef = FFDataRef(dataBuffer: bufferPtr, length: length)
+        dataRef = FFDataRef(length: data.count)
         
-        if (length > 0)
+        if (data.count > 0)
         {
             // Encode the data
             data.withUnsafeBytes {
-                coders.encoder(UnsafeBufferPointer(start: $0, count: length),
-                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count: length))
+                self.coders.encoder(UnsafeBufferPointer(start: $0, count: data.count),
+                                    UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
             }
         }
     }
     
     
-    /// Create a wrapper with the given capacity and the given initializer closure.
+    /// Create a wrapper with the given length and the given initializer closure.
     ///
     /// - Parameters:
-    ///   - capacity: The desired capacity.
+    ///   - length: The desired length.
     ///   - initializer: Initializer closure to set initial contents.
-    ///   - coders: Pair of coders to use to convert to/from the internal representation.
-    public init(capacity: Int,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void,
-                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    ///   - coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
+    public init(length: Int,
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
+                _ initializer: (UnsafeMutableBufferPointer<UInt8>) throws -> Void) rethrows
     {
-        self.encoder = coders.encoder
-        self.decoder = coders.decoder
-        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity == 0 ? 1 : capacity)
-        dataRef = FFDataRef(dataBuffer: bufferPtr, length: capacity)
+        guard length > 0 else {
+            self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
+            self.dataRef = FFDataRef(length: 0)
+            return
+        }
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(length).coders
+        self.dataRef = FFDataRef(length: length)
+
+        let tempBufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
+        defer {
+            tempBufferPtr.initialize(to: 0, count: length)
+            tempBufferPtr.deallocate(capacity: length)
+        }
         
-        if (capacity > 0)
-        {
-            let tempBufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
-            initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: capacity))
-            coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: capacity),
-                           UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer, count: capacity))
+        try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: length))
+        self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
+                            UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
+
+    }
+
+    
+    public init(capacity: Int,
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
+                _ initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) throws -> Void) rethrows
+    {
+        guard capacity > 0 else {
+            self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
+            self.dataRef = FFDataRef(length: 0)
+            return
+        }
+        
+        let tempBufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: capacity)
+        
+        defer {
+            // Securely wipe the temp buffer.
             tempBufferPtr.initialize(to: 0, count: capacity)
             tempBufferPtr.deallocate(capacity: capacity)
         }
+        
+        var actualLength = capacity
+        try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: capacity), &actualLength)
+
+        guard actualLength > 0 && actualLength <= capacity else {
+            self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(1).coders
+            self.dataRef = FFDataRef(length: 0)
+            return
+        }
+        
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(actualLength).coders
+        self.dataRef = FFDataRef(length: actualLength)
+        self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: actualLength),
+                            UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
+
     }
-    
-    
-    /// Create a wrapper with the given capacity and the given initializer closure.
-    /// Use the XOR transformation for internal representation.
-    /// - Parameters:
-    ///   - capacity: The desired capacity.
-    ///   - initializer: Initializer closure to set initial contents.
-    public init(capacity: Int, _ initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void)
-    {
-        self.init(capacity: capacity, initializer, FFDataWrapperEncoders.xorWithRandomVectorOfLength(capacity).coders)
-    }
-    
-    /// Create a wrapper with the given data content and use the XOR transformation for internal representation.
-    /// (Good for simple obfuscation).
-    /// - Parameter data: The data whose contents to wrap.
-    public init(_ data: Data)
-    {
-        let count = data.count
-        self.init(data, FFDataWrapperEncoders.xorWithRandomVectorOfLength(count).coders)
-    }
-    
-    
+
     /// Create a wrapper for an empty data value and use the specified pair of coders to convert to/from the internal representation.
     ///
-    /// - Parameter coders: Pair of coders to use to convert to/from the internal representation.
-    public init(_ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder))
+    /// - Parameter coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
+    public init(_ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
     {
-        self.encoder = coders.encoder
-        self.decoder = coders.decoder
-        let bufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-        dataRef = FFDataRef(dataBuffer: bufferPtr, length: 0)
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
+        dataRef = FFDataRef(length: 0)
     }
     
     /// Create a wrapper for an empty value and use the XOR transformation for internal representation (not really applied, just for consistency reasons).
     public init()
     {
-        self.init(FFDataWrapperEncoders.xorWithRandomVectorOfLength(1).coders)
+        self.init(nil)
     }
 
     
@@ -158,11 +156,11 @@ public struct FFDataWrapper
     @discardableResult
     public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType
     {
-        let dataLength = dataRef.length
-        var decodedData = Data(repeating:0, count: dataLength)
+        var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
 
         decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
-            decoder(UnsafeBufferPointer(start: dataRef.dataBuffer, count: dataLength), UnsafeMutableBufferPointer(start: destPtr, count: dataLength))
+            self.coders.decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
+                                UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count))
         })
         
         let result = try block(&decodedData)
@@ -176,14 +174,34 @@ public struct FFDataWrapper
     /// Returns true if the wrapped data is empty; false otherwise.
     public var isEmpty: Bool
     {
-        return dataRef.length == 0
+        return dataRef.dataBuffer.count == 0
     }
     
     /// Returns the length of the underlying data
     public var length: Int
     {
-        return dataRef.length
+        return dataRef.dataBuffer.count
     }
+}
+
+/// Perform the given closure on the underlying data of two wrappers.
+///
+/// - Parameters:
+///   - w1: First wrapper
+///   - w2: Second wrapper
+///   - block: The closure to perform on the underlying data of two wrappers.
+/// - Returns: Parametrized.
+/// - Throws: Will only throw if the provided closure throws.
+@discardableResult
+public func withDecodedData<ResultType>(_ w1: FFDataWrapper,
+                                        _ w2: FFDataWrapper,
+                                        _ block: (inout Data, inout Data) throws -> ResultType) rethrows -> ResultType
+{
+    return try w1.withDecodedData({ (w1Data: inout Data) -> ResultType in
+        return try w2.withDecodedData({ (w2Data: inout Data) -> ResultType in
+            return try block(&w1Data, &w2Data)
+        })
+    })
 }
 
 extension FFDataWrapper: CustomStringConvertible
@@ -221,8 +239,8 @@ extension FFDataWrapper: CustomDebugStringConvertible
         var result = "FFDataWrapper:\n"
         result += "Underlying data: \"\(underlyingDataString())\"\n"
         result += "dataRef: \(String(reflecting:dataRef))\n"
-        result += "encoder: \(String(reflecting:encoder))\n"
-        result += "decoder: \(String(reflecting:decoder))"
+        result += "encoder: \(String(reflecting:self.coders.encoder))\n"
+        result += "decoder: \(String(reflecting:self.coders.decoder))"
         return result
     }
 }

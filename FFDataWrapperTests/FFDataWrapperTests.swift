@@ -104,7 +104,7 @@ class FFDataWrapperTests: XCTestCase
         
         print(wrapper1.dataRef.dataBuffer)
         let testData = testString.data(using: .utf8)!
-        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer, count: wrapper1.dataRef.length)
+        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer.baseAddress!, count: wrapper1.dataRef.dataBuffer.count)
         XCTAssertNotEqual(underlyingData, testData)
 
         
@@ -127,7 +127,7 @@ class FFDataWrapperTests: XCTestCase
         }
         
         let testData = testString.data(using: .utf8)!
-        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer, count: wrapper1.dataRef.length)
+        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer.baseAddress!, count: wrapper1.dataRef.dataBuffer.count)
         XCTAssertEqual(underlyingData, testData)
         
         let wrapper2 = wrapper1
@@ -149,7 +149,7 @@ class FFDataWrapperTests: XCTestCase
             XCTAssertEqual(recoveredString, testString)
         }
 
-        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer, count: wrapper1.dataRef.length)
+        let underlyingData = Data(bytes: wrapper1.dataRef.dataBuffer.baseAddress!, count: wrapper1.dataRef.dataBuffer.count)
         XCTAssertNotEqual(underlyingData, testData)
 
         let wrapper2 = wrapper1
