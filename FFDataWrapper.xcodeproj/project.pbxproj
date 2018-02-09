@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57A1D489202D9D700038147C /* FFDataWrapper+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */; };
+		57A1D48B202D9DD10038147C /* FFDataWrapper+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */; };
 		A5063F8D1F73B29500CA4109 /* FFDataWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5063F831F73B29500CA4109 /* FFDataWrapper.framework */; };
 		A5063F921F73B29500CA4109 /* FFDataWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5063F911F73B29500CA4109 /* FFDataWrapperTests.swift */; };
 		A5063F941F73B29500CA4109 /* FFDataWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = A5063F861F73B29500CA4109 /* FFDataWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Conversions.swift"; sourceTree = "<group>"; };
+		57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Initialization.swift"; sourceTree = "<group>"; };
 		A5063F831F73B29500CA4109 /* FFDataWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5063F861F73B29500CA4109 /* FFDataWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFDataWrapper.h; sourceTree = "<group>"; };
 		A5063F871F73B29500CA4109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -95,6 +99,8 @@
 				A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */,
 				A5A01D2B1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift */,
 				A5FAD4FF1F8E15AE00A51B85 /* FFDataWrapper+Codable.swift */,
+				57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */,
+				57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */,
 			);
 			path = FFDataWrapper;
 			sourceTree = "<group>";
@@ -223,7 +229,9 @@
 				A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */,
 				A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */,
 				A5FAD5001F8E15AE00A51B85 /* FFDataWrapper+Codable.swift in Sources */,
+				57A1D48B202D9DD10038147C /* FFDataWrapper+Initialization.swift in Sources */,
 				A5A01D2C1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift in Sources */,
+				57A1D489202D9D700038147C /* FFDataWrapper+Conversions.swift in Sources */,
 				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,
 				A53389D41F7E6DA7004E8A6C /* FFDataWrapperUtil.swift in Sources */,
 			);

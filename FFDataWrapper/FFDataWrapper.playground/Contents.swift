@@ -117,8 +117,11 @@ testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
 }
 
 let testWrapper = FFDataWrapper("Test underlying string")
-print(String(reflecting:testWrapper))
+// print(String(reflecting:testWrapper))
 
+let bufferPtr = UnsafeMutableBufferPointer(start: UnsafeMutablePointer<UInt8>.allocate(capacity: 10), count: 10)
+
+let bufferData = Data(bufferPtr)
 
 
 

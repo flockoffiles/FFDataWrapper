@@ -31,14 +31,14 @@ public enum FFDataWrapperEncoders
         }
     }
     
-    internal static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder
+    public static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder
     {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
             xor(src: src, dest: dest, with: vector)
         }
     }
     
-    internal static func identityFunction() -> FFDataWrapperCoder
+    public static func identityFunction() -> FFDataWrapperCoder
     {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
             justCopy(src: src, dest: dest)
@@ -46,7 +46,7 @@ public enum FFDataWrapperEncoders
     }
 }
 
-extension FFDataWrapperEncoders
+public extension FFDataWrapperEncoders
 {
     /// Simple identity transformation.
     ///
@@ -54,7 +54,7 @@ extension FFDataWrapperEncoders
     ///   - src: Source data to transform.
     ///   - srcLength: Length of the source data.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
-    internal static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>)
+    public static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>)
     {
         // Wipe contents if needed.
         if (dest.count > 0)
@@ -77,7 +77,7 @@ extension FFDataWrapperEncoders
     ///   - src: Source data to transform.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
     ///   - with: Vector to XOR with. If the vector is shorter than the original data, it will be wrapped around.
-    internal static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data)
+    public static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data)
     {
         // Initialize contents
         if (dest.count > 0)
