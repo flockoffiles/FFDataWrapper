@@ -15,7 +15,11 @@ public extension FFDataWrapper
     /// - Parameters:
     ///   - string: The string data to wrap. The string gets converted to UTF8 data before being fed to the encoder closure.
     ///   - coders: The encoder/decoder pair which performs the conversion between external and internal representations. If nil, the default XOR coders will be used.
-    public init(_ string: String, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
+    ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
+    ///          already encoded underlying representation.
+    public init(_ string: String,
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
+                _ encode: Bool = true)
     {
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(string.utf8.count).coders
         
@@ -29,8 +33,9 @@ public extension FFDataWrapper
         {
             // Obfuscate the data
             utf8.withUnsafeBytes {
-                self.coders.encoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count:length),
-                                    UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count:length))
+                let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
+                encoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count:length),
+                        UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count:length))
             }
         }
     }
@@ -40,7 +45,11 @@ public extension FFDataWrapper
     /// - Parameters:
     ///   - data: The data to wrap.
     ///   - coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
-    public init(_ data: Data, _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
+    ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
+    ///          already encoded underlying representation.
+    public init(_ data: Data,
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
+                _ encode: Bool = true)
     {
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(data.count).coders
         
@@ -49,8 +58,9 @@ public extension FFDataWrapper
         if (data.count > 0)
         {
             // Encode the data
-            data.withUnsafeBytes {
-                self.coders.encoder(UnsafeBufferPointer(start: $0, count: data.count),
+            data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
+                let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
+                encoder(UnsafeBufferPointer(start: bytes, count: data.count),
                                     UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
             }
         }
@@ -84,11 +94,9 @@ public extension FFDataWrapper
         }
         
         try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: length))
-        if (encode)
-        {
-            self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
-                                UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
-        }
+        let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
+        self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
+                            UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
     }
     
     
@@ -132,8 +140,9 @@ public extension FFDataWrapper
         
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(actualLength).coders
         self.dataRef = FFDataRef(length: actualLength)
-        self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: actualLength),
-                            UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
+        let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
+        encoder(UnsafeBufferPointer(start: tempBufferPtr, count: actualLength),
+                UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
         
     }
     
