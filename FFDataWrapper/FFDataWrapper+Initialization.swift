@@ -95,8 +95,8 @@ public extension FFDataWrapper
         
         try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: length))
         let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
-        self.coders.encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
-                            UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
+        encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
+                UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
     }
     
     
