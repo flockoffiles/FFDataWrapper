@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		572AF0B520371C230094DA85 /* FFDataWrapperMacOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 572AF0B320371C230094DA85 /* FFDataWrapperMacOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		572AF0B920371C920094DA85 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
+		572AF0BA20371C970094DA85 /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
+		572AF0BB20371C9A0094DA85 /* FFDataRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874991F7A5EE5006BC98A /* FFDataRef.swift */; };
+		572AF0BC20371C9D0094DA85 /* FFDataWrapperUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */; };
+		572AF0BD20371CB10094DA85 /* FFDataWrapper+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5FAD4FF1F8E15AE00A51B85 /* FFDataWrapper+Codable.swift */; };
+		572AF0BE20371CB50094DA85 /* FFDataWrapper+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */; };
+		572AF0BF20371CBB0094DA85 /* FFDataWrapper+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */; };
+		572AF0C020371CC00094DA85 /* FFDataWrapper+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C298D92031C2D70071B293 /* FFDataWrapper+Hashable.swift */; };
 		57A1D489202D9D700038147C /* FFDataWrapper+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */; };
 		57A1D48B202D9DD10038147C /* FFDataWrapper+Initialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */; };
 		57C298DA2031C2D70071B293 /* FFDataWrapper+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C298D92031C2D70071B293 /* FFDataWrapper+Hashable.swift */; };
@@ -33,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		572AF0B120371C230094DA85 /* FFDataWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		572AF0B320371C230094DA85 /* FFDataWrapperMacOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFDataWrapperMacOS.h; sourceTree = "<group>"; };
+		572AF0B420371C230094DA85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Conversions.swift"; sourceTree = "<group>"; };
 		57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Initialization.swift"; sourceTree = "<group>"; };
 		57C298D92031C2D70071B293 /* FFDataWrapper+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Hashable.swift"; sourceTree = "<group>"; };
@@ -53,6 +65,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		572AF0AD20371C230094DA85 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5063F7F1F73B29500CA4109 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -71,11 +90,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		572AF0B220371C230094DA85 /* FFDataWrapperMacOS */ = {
+			isa = PBXGroup;
+			children = (
+				572AF0B320371C230094DA85 /* FFDataWrapperMacOS.h */,
+				572AF0B420371C230094DA85 /* Info.plist */,
+			);
+			path = FFDataWrapperMacOS;
+			sourceTree = "<group>";
+		};
 		A5063F791F73B29500CA4109 = {
 			isa = PBXGroup;
 			children = (
 				A5063F851F73B29500CA4109 /* FFDataWrapper */,
 				A5063F901F73B29500CA4109 /* FFDataWrapperTests */,
+				572AF0B220371C230094DA85 /* FFDataWrapperMacOS */,
 				A5063F841F73B29500CA4109 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,6 +114,7 @@
 			children = (
 				A5063F831F73B29500CA4109 /* FFDataWrapper.framework */,
 				A5063F8C1F73B29500CA4109 /* FFDataWrapperTests.xctest */,
+				572AF0B120371C230094DA85 /* FFDataWrapper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -121,6 +151,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		572AF0AE20371C230094DA85 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				572AF0B520371C230094DA85 /* FFDataWrapperMacOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5063F801F73B29500CA4109 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -132,6 +170,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		572AF0B020371C230094DA85 /* FFDataWrapperMacOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 572AF0B820371C230094DA85 /* Build configuration list for PBXNativeTarget "FFDataWrapperMacOS" */;
+			buildPhases = (
+				572AF0AC20371C230094DA85 /* Sources */,
+				572AF0AD20371C230094DA85 /* Frameworks */,
+				572AF0AE20371C230094DA85 /* Headers */,
+				572AF0AF20371C230094DA85 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FFDataWrapperMacOS;
+			productName = FFDataWrapperMacOS;
+			productReference = 572AF0B120371C230094DA85 /* FFDataWrapper.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		A5063F821F73B29500CA4109 /* FFDataWrapper */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5063F971F73B29500CA4109 /* Build configuration list for PBXNativeTarget "FFDataWrapper" */;
@@ -178,6 +234,10 @@
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Flock of Files";
 				TargetAttributes = {
+					572AF0B020371C230094DA85 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					A5063F821F73B29500CA4109 = {
 						CreatedOnToolsVersion = 9.0;
 						LastSwiftMigration = 0900;
@@ -203,11 +263,19 @@
 			targets = (
 				A5063F821F73B29500CA4109 /* FFDataWrapper */,
 				A5063F8B1F73B29500CA4109 /* FFDataWrapperTests */,
+				572AF0B020371C230094DA85 /* FFDataWrapperMacOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		572AF0AF20371C230094DA85 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5063F811F73B29500CA4109 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -225,6 +293,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		572AF0AC20371C230094DA85 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				572AF0BA20371C970094DA85 /* FFDataWrapperEncoders.swift in Sources */,
+				572AF0C020371CC00094DA85 /* FFDataWrapper+Hashable.swift in Sources */,
+				572AF0B920371C920094DA85 /* FFDataWrapper.swift in Sources */,
+				572AF0BD20371CB10094DA85 /* FFDataWrapper+Codable.swift in Sources */,
+				572AF0BB20371C9A0094DA85 /* FFDataRef.swift in Sources */,
+				572AF0BF20371CBB0094DA85 /* FFDataWrapper+Initialization.swift in Sources */,
+				572AF0BC20371C9D0094DA85 /* FFDataWrapperUtil.swift in Sources */,
+				572AF0BE20371CB50094DA85 /* FFDataWrapper+Conversions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5063F7E1F73B29500CA4109 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -261,6 +344,54 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		572AF0B620371C230094DA85 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U3842W8E3U;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = FFDataWrapperMacOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapperMacOS;
+				PRODUCT_NAME = FFDataWrapper;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		572AF0B720371C230094DA85 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = U3842W8E3U;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = FFDataWrapperMacOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapperMacOS;
+				PRODUCT_NAME = FFDataWrapper;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 		A5063F951F73B29500CA4109 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -454,6 +585,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		572AF0B820371C230094DA85 /* Build configuration list for PBXNativeTarget "FFDataWrapperMacOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				572AF0B620371C230094DA85 /* Debug */,
+				572AF0B720371C230094DA85 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A5063F7D1F73B29500CA4109 /* Build configuration list for PBXProject "FFDataWrapper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
