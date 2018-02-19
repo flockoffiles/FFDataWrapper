@@ -6,7 +6,7 @@
 //  Copyright © 2017 Flock of Files. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for FFDataWrapper.
 FOUNDATION_EXPORT double FFDataWrapperVersionNumber;
