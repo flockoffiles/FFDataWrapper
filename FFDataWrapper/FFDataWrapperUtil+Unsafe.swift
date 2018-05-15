@@ -28,7 +28,7 @@ public extension FFDataWrapper
             return
         }
         
-        basePtr.assumingMemoryBound(to: UInt8.self).initialize(to: value, count: core.elementWidth * core.count)
+        basePtr.assumingMemoryBound(to: UInt8.self).initialize(repeating: value, count: core.elementWidth * core.count)
     }
     
     

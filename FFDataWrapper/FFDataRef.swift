@@ -26,8 +26,8 @@ internal class FFDataRef
     deinit
     {
         // Explicitly clear the buffer (important)!
-        dataBuffer.baseAddress!.initialize(to: 0, count: dataBuffer.count)
-        dataBuffer.baseAddress!.deallocate(capacity: dataBuffer.count)
+        dataBuffer.baseAddress!.initialize(repeating: 0, count: dataBuffer.count)
+        dataBuffer.baseAddress!.deallocate()
     }
 }
 

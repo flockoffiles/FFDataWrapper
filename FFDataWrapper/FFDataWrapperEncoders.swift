@@ -59,7 +59,7 @@ public extension FFDataWrapperEncoders
         // Wipe contents if needed.
         if (dest.count > 0)
         {
-            dest.baseAddress!.initialize(to: 0, count: dest.count)
+            dest.baseAddress!.initialize(repeating: 0, count: dest.count)
         }
         
         guard src.count > 0 && dest.count >= src.count else {
@@ -82,7 +82,7 @@ public extension FFDataWrapperEncoders
         // Initialize contents
         if (dest.count > 0)
         {
-            dest.baseAddress!.initialize(to: 0, count: dest.count)
+            dest.baseAddress!.initialize(repeating: 0, count: dest.count)
         }
         
         guard src.count > 0 && dest.count >= src.count else {

@@ -49,10 +49,10 @@ extension FFDataWrapper: CustomDebugStringConvertible
     }
 }
 
-extension FFDataWrapper: CustomPlaygroundQuickLookable
+extension FFDataWrapper: CustomPlaygroundDisplayConvertible
 {
-    public var customPlaygroundQuickLook: PlaygroundQuickLook
+    public var playgroundDescription: Any
     {
-        return .text(self.description)
+        return self.description
     }
 }

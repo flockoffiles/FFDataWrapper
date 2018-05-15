@@ -89,8 +89,8 @@ public extension FFDataWrapper
         
         let tempBufferPtr = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
         defer {
-            tempBufferPtr.initialize(to: 0, count: length)
-            tempBufferPtr.deallocate(capacity: length)
+            tempBufferPtr.initialize(repeating: 0, count: length)
+            tempBufferPtr.deallocate()
         }
         
         try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: length))
@@ -125,8 +125,8 @@ public extension FFDataWrapper
         
         defer {
             // Securely wipe the temp buffer.
-            tempBufferPtr.initialize(to: 0, count: capacity)
-            tempBufferPtr.deallocate(capacity: capacity)
+            tempBufferPtr.initialize(repeating: 0, count: capacity)
+            tempBufferPtr.deallocate()
         }
         
         var actualLength = capacity
