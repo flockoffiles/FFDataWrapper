@@ -11,6 +11,7 @@ Pod::Spec.new do |spec|
     spec.source_files = 'FFDataWrapper/*.swift',
 	spec.public_header_files = 'FFDataWrapper/*.h'
     spec.documentation_url = 'https://github.com/flockoffiles/FFDataWrapper/'
+	spec.swift_version = '4.1'
     # spec.dependency '', '~> 0.0.0'
     spec.preserve_paths = 'README.md', 'FFDataWrapperTests/*.swift'
 end
