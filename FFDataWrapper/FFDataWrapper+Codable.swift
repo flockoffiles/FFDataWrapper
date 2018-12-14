@@ -10,26 +10,20 @@ import Foundation
 
 /// Implementation of Codable for the data wrapper.
 /// Note: current implementation does NOT provide secure wiping of data/string artifacts which resulting from encoding.
-extension FFDataWrapper: Codable
-{
+extension FFDataWrapper: Codable {
     /// Encode the underlying data using the given encoder.
     /// By default encoding is done as Data. It's possible to override this and use UTF-8 string by specifying String.self as the value
     /// for key FFDataWrapper.originalDataTypeInfoKey in the encoder's userInfo dictionary.
     /// - Parameter encoder: The relevant encoder.
     /// - Throws: Error if encoding fails.
-    public func encode(to encoder: Encoder) throws
-    {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try withDecodedData {
-            if (encoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil
-            {
+            if (encoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
                 // TODO: There is no way to securely wipe the string contents.
-                if let stringValue = String(data: $0, encoding: .utf8)
-                {
+                if let stringValue = String(data: $0, encoding: .utf8) {
                     try container.encode(stringValue)
-                }
-                else
-                {
+                } else {
                     try container.encode("")
                 }
                 return
@@ -45,18 +39,13 @@ extension FFDataWrapper: Codable
     /// in the decoder's userInfo dictionary.
     /// - Parameter decoder: The relevant decoder
     /// - Throws: Error in case decoding fails.
-    public init(from decoder: Decoder) throws
-    {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        if (decoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil
-        {
+        if (decoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
             var string = try container.decode(String.self)
-            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)
-            {
+            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
                 self.init(string, coders)
-            }
-            else
-            {
+            } else {
                 self.init(string)
             }
             // TODO: This may not actually work if there are more references to the string's backing store.
@@ -65,12 +54,10 @@ extension FFDataWrapper: Codable
         else
         {
             var data = try container.decode(Data.self)
-            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)
-            {
+            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
                 self.init(data, coders)
             }
-            else
-            {
+            else {
                 self.init(data)
             }
             FFDataWrapper.wipe(&data)

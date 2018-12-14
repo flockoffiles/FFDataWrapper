@@ -9,24 +9,19 @@
 import Foundation
 
 #if DEBUG
-extension FFDataWrapper: CustomStringConvertible
-{
-    public static func hexString(_ data: Data) -> String
-    {
+extension FFDataWrapper: CustomStringConvertible {
+    public static func hexString(_ data: Data) -> String {
         var result = String()
         result.reserveCapacity(data.count * 2)
-        for i in 0 ..< data.count
-        {
+        for i in 0 ..< data.count {
             result += String(format: "%02X", data[i])
         }
         return result
     }
     
-    func underlyingDataString() -> String
-    {
+    func underlyingDataString() -> String {
         return self.withDecodedData { decodedData -> String in
-            if let dataAsString = String(data: decodedData, encoding: .utf8)
-            {
+            if let dataAsString = String(data: decodedData, encoding: .utf8) {
                 return dataAsString
             }
             return FFDataWrapper.hexString(decodedData)
@@ -38,8 +33,7 @@ extension FFDataWrapper: CustomStringConvertible
     }
 }
 
-extension FFDataWrapper: CustomDebugStringConvertible
-{
+extension FFDataWrapper: CustomDebugStringConvertible {
     public var debugDescription: String {
         var result = "FFDataWrapper:\n"
         result += "Underlying data: \"\(underlyingDataString())\"\n"
@@ -50,10 +44,8 @@ extension FFDataWrapper: CustomDebugStringConvertible
     }
 }
 
-extension FFDataWrapper: CustomPlaygroundDisplayConvertible
-{
-    public var playgroundDescription: Any
-    {
+extension FFDataWrapper: CustomPlaygroundDisplayConvertible {
+    public var playgroundDescription: Any {
         return self.description
     }
 }

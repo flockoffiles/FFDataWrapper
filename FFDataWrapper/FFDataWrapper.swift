@@ -12,8 +12,7 @@ public typealias FFDataWrapperCoder = (UnsafeBufferPointer<UInt8>, UnsafeMutable
 
 /// FFDataWrapper is a struct which wraps a piece of data and provides some custom internal representation for it.
 /// Conversions between original and internal representations can be specified with encoder and decoder closures.
-public struct FFDataWrapper
-{
+public struct FFDataWrapper {
     /// Class holding the data buffer and responsible for wiping the data when FFDataWrapper is destroyed.
     internal let dataRef: FFDataRef
     
@@ -26,8 +25,7 @@ public struct FFDataWrapper
     /// by the time the closure completes).
     /// - Parameter block: The closure to execute.
     @discardableResult
-    public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType
-    {
+    public func mapData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
         var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
 
         decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
@@ -42,21 +40,24 @@ public struct FFDataWrapper
         return result
     }
     
+    /// Will be deprecated soon. Please use mapData instead.
+    @discardableResult
+    public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
+        return try mapData(block)
+    }
     
     /// Returns true if the wrapped data is empty; false otherwise.
-    public var isEmpty: Bool
-    {
+    public var isEmpty: Bool {
         return dataRef.dataBuffer.count == 0
     }
     
     /// Returns the length of the underlying data
-    public var length: Int
-    {
+    public var length: Int {
         return dataRef.dataBuffer.count
     }
     
-    public var rawData: Data
-    {
+    /// Returns the raw internal storage data.
+    public var rawData: Data {
         return Data(dataRef.dataBuffer)
     }
 }

@@ -6,15 +6,24 @@ Conversions between original and internal representations can be specified with 
 
 ## How to Install
 
+### Cocoapods
+
 To use with cocoapods, add the following line to your Podfile:
 
 ```
-pod 'FFDataWrapper', :git => 'https://github.com/flockoffiles/FFDataWrapper', :branch => 'master'
+pod 'FFDataWrapper', '~> 1.5'
 ```
 
+### Carthage
+
+To use with Carthage, add the following line to your Cartfile:
+
+github "flockoffiles/FFDataWrapper" ~> 1.5
 ## How to Use
 
-TODO
+See FFDataWrapper.swift and FFDataWrapper+Initialization.swift for possible initializers.
+
+
 
 
 

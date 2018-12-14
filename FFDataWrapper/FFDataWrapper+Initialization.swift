@@ -8,8 +8,7 @@
 
 import Foundation
 
-public extension FFDataWrapper
-{
+public extension FFDataWrapper {
     /// Initialize the data wrapper with the given string content and a pair of coder/decoder to convert between representations.
     ///
     /// - Parameters:
@@ -19,8 +18,7 @@ public extension FFDataWrapper
     ///          already encoded underlying representation.
     public init(_ string: String,
                 _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
-                _ encode: Bool = true)
-    {
+                _ encode: Bool = true) {
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(string.utf8.count).coders
         
         let utf8 = string.utf8CString
@@ -29,8 +27,7 @@ public extension FFDataWrapper
         self.dataRef = FFDataRef(length: length)
         
         // If length is 0 there may not be a pointer to the string content
-        if (length > 0)
-        {
+        if (length > 0) {
             // Obfuscate the data
             utf8.withUnsafeBytes {
                 let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
@@ -49,14 +46,12 @@ public extension FFDataWrapper
     ///          already encoded underlying representation.
     public init(_ data: Data,
                 _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
-                _ encode: Bool = true)
-    {
+                _ encode: Bool = true) {
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(data.count).coders
         
         dataRef = FFDataRef(length: data.count)
         
-        if (data.count > 0)
-        {
+        if (data.count > 0) {
             // Encode the data
             data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
                 let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
@@ -77,8 +72,7 @@ public extension FFDataWrapper
     public init(length: Int,
                 _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
                 _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>) throws -> Void) rethrows
-    {
+                _ initializer: (UnsafeMutableBufferPointer<UInt8>) throws -> Void) rethrows {
         guard length > 0 else {
             self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
             self.dataRef = FFDataRef(length: 0)
@@ -113,8 +107,7 @@ public extension FFDataWrapper
     public init(capacity: Int,
                 _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
                 _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) throws -> Void) rethrows
-    {
+                _ initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) throws -> Void) rethrows {
         guard capacity > 0 else {
             self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
             self.dataRef = FFDataRef(length: 0)
@@ -149,15 +142,13 @@ public extension FFDataWrapper
     /// Create a wrapper for an empty data value and use the specified pair of coders to convert to/from the internal representation.
     ///
     /// - Parameter coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
-    public init(_ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil)
-    {
+    public init(_ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil) {
         self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(0).coders
         dataRef = FFDataRef(length: 0)
     }
     
     /// Create a wrapper for an empty value and use the XOR transformation for internal representation (not really applied, just for consistency reasons).
-    public init()
-    {
+    public init() {
         self.init(nil)
     }
 }

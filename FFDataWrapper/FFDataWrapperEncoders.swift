@@ -54,11 +54,9 @@ public extension FFDataWrapperEncoders
     ///   - src: Source data to transform.
     ///   - srcLength: Length of the source data.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
-    public static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>)
-    {
+    public static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) {
         // Wipe contents if needed.
-        if (dest.count > 0)
-        {
+        if (dest.count > 0) {
             dest.baseAddress!.initialize(repeating: 0, count: dest.count)
         }
         
@@ -69,19 +67,15 @@ public extension FFDataWrapperEncoders
         dest.baseAddress!.assign(from: src.baseAddress!, count: src.count)
     }
     
-
-    
     /// Sample transformation for custom content. XORs the source representation (byte by byte) with the given vector.
     ///
     /// - Parameters:
     ///   - src: Source data to transform.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
     ///   - with: Vector to XOR with. If the vector is shorter than the original data, it will be wrapped around.
-    public static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data)
-    {
+    public static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data) {
         // Initialize contents
-        if (dest.count > 0)
-        {
+        if (dest.count > 0) {
             dest.baseAddress!.initialize(repeating: 0, count: dest.count)
         }
         
@@ -90,13 +84,11 @@ public extension FFDataWrapperEncoders
         }
         
         var j = 0
-        for i in 0 ..< dest.count
-        {
+        for i in 0 ..< dest.count {
             let srcByte: UInt8 = i < src.count ? src[i] : 0
             dest[i] = srcByte ^ with[j]
             j += 1
-            if j >= with.count
-            {
+            if j >= with.count {
                 j = 0
             }
         }
