@@ -24,9 +24,7 @@ public extension FFDataWrapper
     public static func wipe(_ string: inout String)
     {
         let empty = String(repeating: "\0", count: string.count)
-        string.withMutableCharacters {
-            $0.replaceSubrange($0.startIndex ..< $0.endIndex, with: empty)
-        }
+        string.replaceSubrange(string.startIndex ..< string.endIndex, with: empty)
     }
 
 }

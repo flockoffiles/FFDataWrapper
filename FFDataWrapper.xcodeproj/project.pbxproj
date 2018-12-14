@@ -24,7 +24,6 @@
 		A5063F941F73B29500CA4109 /* FFDataWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = A5063F861F73B29500CA4109 /* FFDataWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A53389D41F7E6DA7004E8A6C /* FFDataWrapperUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53389D31F7E6DA7004E8A6C /* FFDataWrapperUtil.swift */; };
 		A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5451BB61F740CC300F2F985 /* FFDataWrapper.swift */; };
-		A5A01D2C1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A01D2B1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift */; };
 		A5BFBBBA1F95032F00FBFB7D /* FFJSONEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BFBBB91F95032F00FBFB7D /* FFJSONEncoder.swift */; };
 		A5F874981F7A4346006BC98A /* FFDataWrapperEncoders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874971F7A4346006BC98A /* FFDataWrapperEncoders.swift */; };
 		A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F874991F7A5EE5006BC98A /* FFDataRef.swift */; };
@@ -316,7 +315,6 @@
 				A5F8749A1F7A5EE5006BC98A /* FFDataRef.swift in Sources */,
 				A5FAD5001F8E15AE00A51B85 /* FFDataWrapper+Codable.swift in Sources */,
 				57A1D48B202D9DD10038147C /* FFDataWrapper+Initialization.swift in Sources */,
-				A5A01D2C1F90DD2C00F5DD33 /* FFDataWrapperUtil+Unsafe.swift in Sources */,
 				57A1D489202D9D700038147C /* FFDataWrapper+Conversions.swift in Sources */,
 				57C298DA2031C2D70071B293 /* FFDataWrapper+Hashable.swift in Sources */,
 				A5451BB71F740CC300F2F985 /* FFDataWrapper.swift in Sources */,

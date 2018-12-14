@@ -8,6 +8,7 @@
 
 import Foundation
 
+#if DEBUG
 extension FFDataWrapper: CustomStringConvertible
 {
     public static func hexString(_ data: Data) -> String
@@ -56,3 +57,5 @@ extension FFDataWrapper: CustomPlaygroundDisplayConvertible
         return self.description
     }
 }
+#endif
+

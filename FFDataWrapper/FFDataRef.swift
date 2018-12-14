@@ -9,7 +9,7 @@
 import Foundation
 
 /// Helper class which makes sure that the internal representation gets wiped securely when FFDataWrapper is destroyed.
-internal class FFDataRef
+internal final class FFDataRef
 {
     /// Pointer to the data buffer holding the internal representation of the wrapper data.
     let dataBuffer: UnsafeMutableBufferPointer<UInt8>
@@ -31,6 +31,7 @@ internal class FFDataRef
     }
 }
 
+#if DEBUG
 extension FFDataRef: CustomStringConvertible
 {
     static func hexString(_ dataBuffer: UnsafePointer<UInt8>, _ length: Int) -> String
@@ -49,4 +50,5 @@ extension FFDataRef: CustomStringConvertible
         return "FFDataRef: \(content)"
     }
 }
+#endif
 

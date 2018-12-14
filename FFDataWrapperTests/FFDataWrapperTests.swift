@@ -44,54 +44,6 @@ class FFDataWrapperTests: XCTestCase
     let utf16TestString = "AB❤️💛❌✅"
     let wipeCharacter = UInt8(46)
 
-    func testUnsafeWipeUtf8String()
-    {
-        let expectedWipedString = String(testString.map { _ in Character(UnicodeScalar(wipeCharacter)) })
-        var testUtf8String = String()
-        testUtf8String.append(testString)
-        
-        FFDataWrapper.unsafeWipe(&testUtf8String, with: wipeCharacter)
-        
-        XCTAssertEqual(testUtf8String, expectedWipedString)
-    }
-    
-    func testUnsafeWipeShortUtf8String()
-    {
-        let expectedWipedString = String(shortTestString.map { _ in Character(UnicodeScalar(wipeCharacter)) })
-        var testUtf8String = String()
-        testUtf8String.append(shortTestString)
-        
-        FFDataWrapper.unsafeWipe(&testUtf8String, with: wipeCharacter)
-        
-        XCTAssertEqual(testUtf8String, expectedWipedString)
-    }
-    
-    func testUnsafeWipeUtf16String()
-    {
-        var testUtf16String = String()
-        testUtf16String.append(utf16TestString)
-        
-        FFDataWrapper.unsafeWipe(&testUtf16String, with: wipeCharacter)
-        
-        let elements = Array(testUtf16String.utf16)
-        elements.forEach {
-            XCTAssertEqual($0, UInt16(wipeCharacter) * 256 + UInt16(wipeCharacter))
-        }
-    }
-    
-    func testUnsafeWipeSwiftMutableData()
-    {
-        var data = Data()
-        data.append(testString.data(using: .utf8)!)
-        
-        let expectedData = Data(count: data.count)
-        
-        FFDataWrapper.unsafeWipe(&data)
-        
-        XCTAssertEqual(data, expectedData)
-    }
-    
-    
     func testWrapStringWithXOR()
     {
         let wrapper1 = FFDataWrapper(testString)
@@ -159,6 +111,33 @@ class FFDataWrapperTests: XCTestCase
         }
     }
     
+    struct FFClassHeader
+    {
+        let isa: UnsafeRawPointer
+        let retainCounts: UInt64
+    }
+    
+    /*
+     // String.swift
+     struct String {
+         var _guts: _StringGuts
+     }
+     // StringGuts.swift
+     struct _StringGuts {
+         internal var _object: _StringObject
+     }
+     
+     // StringObject.swift
+     internal struct _StringObject {
+         internal var _count: Int
+         internal var _variant: Variant
+         internal var _discriminator: Discriminator
+         internal var _flags: Flags
+         internal var _object: Builtin.BridgeObject
+     }
+     
+    */
+    
     /// Here we test that the temporary data which is given to the closure gets really wiped.
     /// This is the case where the data is NOT copied out.
     func testWipeAfterDecode()
@@ -191,38 +170,6 @@ class FFDataWrapperTests: XCTestCase
         
         let expectedReconstructedBacking = Data.init(count: testDataLength)
         XCTAssertEqual(reconstructedBacking, expectedReconstructedBacking)
-    }
-    
-    func testUnsafeWipeNSMutableData()
-    {
-        let nsData = NSMutableData()
-        var testData = testString.data(using: .utf8)!
-        let length = testData.count
-        testData.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
-            nsData.append(bytes, length: length)
-        }
-        
-        // let nsDataBytes = nsData.bytes
-        
-        var data = nsData as Data
-        var data2: Data?
-        Data._forceBridgeFromObjectiveC(nsData, result: &data2)
-        // var bridgedNSData = data as NSData
-        // var bridgedNSData2 = data._bridgeToObjectiveC()
-        FFDataWrapper.unsafeWipe(&data)
-        
-        let expectedData = Data(count: length)
-        
-        XCTAssertEqual(data, expectedData)
-        let expectedNSData = NSMutableData()
-        expectedData.withUnsafeBytes {
-            expectedNSData.append($0, length: length)
-        }
-        
-        
-        // TODO: although we can wipe the native Swift data backing store,
-        // we cannot get to the original NSString yet.
-        // XCTAssertEqual(nsData, expectedNSData)
     }
     
     struct StructWithSensitiveData: Decodable
