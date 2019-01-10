@@ -15,6 +15,8 @@ public enum FFDataWrapperEncoders
     case identity
     /// XOR with the random vector of the given legth.
     case xorWithRandomVectorOfLength(Int)
+    /// XOR with the given vector
+    case xor(Data)
     
     public var coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
         switch self
@@ -28,18 +30,18 @@ public enum FFDataWrapperEncoders
             }
             
             return (encoder: FFDataWrapperEncoders.xorWithVector(vector), decoder: FFDataWrapperEncoders.xorWithVector(vector))
+        case .xor(let vector):
+            return (encoder: FFDataWrapperEncoders.xorWithVector(vector), decoder: FFDataWrapperEncoders.xorWithVector(vector))
         }
     }
     
-    public static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder
-    {
+    public static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
             xor(src: src, dest: dest, with: vector)
         }
     }
     
-    public static func identityFunction() -> FFDataWrapperCoder
-    {
+    public static func identityFunction() -> FFDataWrapperCoder {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
             justCopy(src: src, dest: dest)
         }
