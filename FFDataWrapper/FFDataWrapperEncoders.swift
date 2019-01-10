@@ -9,8 +9,7 @@
 import Foundation
 
 /// Enumeration defining some basic coders (transformers)
-public enum FFDataWrapperEncoders
-{
+public enum FFDataWrapperEncoders {
     /// Do not transform. Just copy.
     case identity
     /// XOR with the random vector of the given legth.
@@ -48,8 +47,7 @@ public enum FFDataWrapperEncoders
     }
 }
 
-public extension FFDataWrapperEncoders
-{
+public extension FFDataWrapperEncoders {
     /// Simple identity transformation.
     ///
     /// - Parameters:
@@ -94,5 +92,12 @@ public extension FFDataWrapperEncoders
                 j = 0
             }
         }
+    }
+}
+
+public extension Array where Element == UInt8 {
+    public func coders(_ coder: (Data) -> FFDataWrapperCoder) -> (FFDataWrapperCoder, FFDataWrapperCoder) {
+        let data = Data(bytes: self)
+        return (coder(data), coder(data))
     }
 }
