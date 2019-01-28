@@ -61,6 +61,29 @@ public extension FFDataWrapper {
         }
     }
     
+    /// Create a wrapper with the given data content and use the specified pair of coders to convert to/from the internal representation.
+    ///
+    /// - Parameters:
+    ///   - byteArray: The data to wrap.
+    ///   - coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
+    ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
+    ///          already encoded underlying representation.
+    public init(_ byteArray: [UInt8],
+                _ coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)? = nil,
+                _ encode: Bool = true) {
+        self.coders = coders ?? FFDataWrapperEncoders.xorWithRandomVectorOfLength(byteArray.count).coders
+        
+        dataRef = FFDataRef(length: byteArray.count)
+        
+        if (byteArray.count > 0) {
+            let encoder = encode ? self.coders.encoder : FFDataWrapperEncoders.identity.coders.encoder
+            // Encode the data
+            byteArray.withUnsafeBufferPointer {
+                encoder($0, UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
+            }
+        }
+    }
+    
     /// Create a wrapper with the given length and the given initializer closure.
     /// The initializer closure is used to set the initial data contents.
     /// - Parameters:
@@ -92,7 +115,6 @@ public extension FFDataWrapper {
         encoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
                 UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
     }
-    
     
     /// Create a wrapper with the given maximum capacity (in bytes).
     ///
