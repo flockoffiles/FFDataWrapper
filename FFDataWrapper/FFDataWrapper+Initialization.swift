@@ -83,22 +83,6 @@ extension FFDataWrapper {
                        UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
     }
 
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(length:coders:encode:initializer) instead")
-    public init(length: Int,
-                _ coders: FFDataWrapper.Coders? = nil,
-                _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>) throws -> Void) throws {
-        try self.init(length: length, coders: coders, encode: encode, initializer: initializer)
-    }
-
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(length:coders:encode:initializer) instead")
-    public init(length: Int,
-                _ coders: FFDataWrapper.Coders? = nil,
-                _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void) {
-        try! self.init(length: length, coders: coders, encode: encode, initializer: initializer)
-    }
-
     /// Create a wrapper of the given length and the given initializer closure.
     /// The initializer closure is used to set the initial data contents.
     /// - Parameters:
