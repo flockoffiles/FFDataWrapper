@@ -17,11 +17,10 @@ public enum FFDataWrapperEncoders {
     /// XOR with the given vector
     case xor(Data)
     
-    public var coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
-        switch self
-        {
+    public var coders: FFDataWrapper.Coders {
+        switch self {
         case .identity:
-            return (encoder: FFDataWrapperEncoders.identityFunction(), FFDataWrapperEncoders.identityFunction())
+            return (encoder: FFDataWrapperEncoders.identityFunction(), decoder: FFDataWrapperEncoders.identityFunction())
         case .xorWithRandomVectorOfLength(let length):
             var vector = Data(count: length)
             let _ = vector.withUnsafeMutableBytes {
@@ -34,14 +33,42 @@ public enum FFDataWrapperEncoders {
         }
     }
     
-    public static func xorWithVector(_ vector: Data) -> FFDataWrapperCoder {
+    public var infoCoders: FFDataWrapper.InfoCoders {
+        switch self {
+        case .identity:
+            return (encoder: FFDataWrapperEncoders.infoIdentityFunction(), decoder: FFDataWrapperEncoders.infoIdentityFunction())
+        case .xorWithRandomVectorOfLength(let length):
+            var vector = Data(count: length)
+            let _ = vector.withUnsafeMutableBytes {
+                SecRandomCopyBytes(kSecRandomDefault, length, $0)
+            }
+            
+            return (encoder: FFDataWrapperEncoders.infoXorWithVector(vector), decoder: FFDataWrapperEncoders.infoXorWithVector(vector))
+        case .xor(let vector):
+            return (encoder: FFDataWrapperEncoders.infoXorWithVector(vector), decoder: FFDataWrapperEncoders.infoXorWithVector(vector))
+        }
+    }
+    
+    public static func xorWithVector(_ vector: Data) -> FFDataWrapper.Coder {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
             xor(src: src, dest: dest, with: vector)
         }
     }
     
-    public static func identityFunction() -> FFDataWrapperCoder {
+    public static func infoXorWithVector(_ vector: Data) -> FFDataWrapper.InfoCoder {
+        return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, info: Any?) in
+            xor(src: src, dest: dest, with: vector)
+        }
+    }
+    
+    public static func identityFunction() -> FFDataWrapper.Coder {
         return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) in
+            justCopy(src: src, dest: dest)
+        }
+    }
+    
+    public static func infoIdentityFunction() -> FFDataWrapper.InfoCoder {
+        return { (src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, info: Any?) in
             justCopy(src: src, dest: dest)
         }
     }
@@ -96,7 +123,7 @@ public extension FFDataWrapperEncoders {
 }
 
 public extension Array where Element == UInt8 {
-    public func coders(_ coder: (Data) -> FFDataWrapperCoder) -> (FFDataWrapperCoder, FFDataWrapperCoder) {
+    public func coders(_ coder: (Data) -> FFDataWrapper.Coder) -> (FFDataWrapper.Coder, FFDataWrapper.Coder) {
         let data = Data(bytes: self)
         return (coder(data), coder(data))
     }

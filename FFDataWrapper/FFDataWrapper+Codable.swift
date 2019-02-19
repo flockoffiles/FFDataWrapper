@@ -18,20 +18,34 @@ extension FFDataWrapper: Codable {
     /// - Throws: Error if encoding fails.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        try withDecodedData {
-            if (encoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
-                // TODO: There is no way to securely wipe the string contents.
-                if let stringValue = String(data: $0, encoding: .utf8) {
-                    try container.encode(stringValue)
-                } else {
-                    try container.encode("")
+        if let info = encoder.userInfo[FFDataWrapper.infoInfoKey] {
+            try self.mapData(info: info, block: { (data: inout Data) in
+                if (encoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
+                    // TODO: There is no way to securely wipe the string contents.
+                    if let stringValue = String(data: data, encoding: .utf8) {
+                        try container.encode(stringValue)
+                    } else {
+                        try container.encode("")
+                    }
+                    return
                 }
-                return
+                try container.encode(data)
+            })
+        } else {
+            try mapData {
+                if (encoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
+                    // TODO: There is no way to securely wipe the string contents.
+                    if let stringValue = String(data: $0, encoding: .utf8) {
+                        try container.encode(stringValue)
+                    } else {
+                        try container.encode("")
+                    }
+                    return
+                }
+                try container.encode($0)
             }
-            try container.encode($0)
         }
     }
-    
     
     /// Instantiate a data wrapper by decoding the given value.
     /// By default we expect a Data value encoded in some standard way.
@@ -41,31 +55,36 @@ extension FFDataWrapper: Codable {
     /// - Throws: Error in case decoding fails.
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        if (decoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
-            var string = try container.decode(String.self)
-            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
-                self.init(string, coders)
+        var data = try { () throws -> Data in
+            if (decoder.userInfo[FFDataWrapper.originalDataTypeInfoKey] as? String.Type) != nil {
+                var string = try container.decode(String.self)
+                defer {
+                    // TODO: This may not actually work if there are more references to the string's backing store.
+                    FFDataWrapper.wipe(&string)
+                }
+                return string.data(using: .utf8)!
             } else {
-                self.init(string)
+                return try container.decode(Data.self)
             }
-            // TODO: This may not actually work if there are more references to the string's backing store.
-            FFDataWrapper.wipe(&string)
-        }
-        else
-        {
-            var data = try container.decode(Data.self)
-            if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder) {
-                self.init(data, coders)
-            }
-            else {
-                self.init(data)
-            }
+        }()
+        
+        defer {
+            // TODO: This may not actually work if there are more references to the data backing store.
             FFDataWrapper.wipe(&data)
+        }
+        
+        if let coders = decoder.userInfo[type(of: self).codersInfoKey] as? FFDataWrapper.Coders {
+            self.init(data: data, coders: coders)
+        } else if let infoCoders = decoder.userInfo[type(of: self).codersInfoKey] as? FFDataWrapper.InfoCoders {
+            self.init(data: data, infoCoders: infoCoders, info: decoder.userInfo[type(of: self).infoInfoKey])
+        } else {
+            self.init(data: data)
         }
     }
     
     public static let codersInfoKey = CodingUserInfoKey(rawValue: "FFDataWrapperCoders")!
     public static let originalDataTypeInfoKey = CodingUserInfoKey(rawValue: "FFDataWrapperOriginalDataType")!
+    public static let infoInfoKey = CodingUserInfoKey(rawValue: "FFDataWrapperInfo")!
     
 }
 

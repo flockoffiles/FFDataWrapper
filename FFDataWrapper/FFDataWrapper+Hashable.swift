@@ -8,17 +8,18 @@
 
 import Foundation
 
-extension FFDataWrapper: Hashable
-{
+extension FFDataWrapper: Hashable {
+    /// NOTE: The implementation does NOT take extra info into account (in case InfoCoder is being used).
     public var hashValue: Int {
-        return withDecodedData({ (data: inout Data) -> Int in
+        return mapData({ (data: inout Data) -> Int in
             return data.hashValue
         })
     }
     
+    /// NOTE: The implementation does NOT take extra info into account (in case InfoCoder is being used).
     public static func ==(lhs: FFDataWrapper, rhs: FFDataWrapper) -> Bool {
-        return lhs.withDecodedData({ (lhsData: inout Data) -> Bool in
-            return rhs.withDecodedData({ (rhsData: inout Data) -> Bool in
+        return lhs.mapData({ (lhsData: inout Data) -> Bool in
+            return rhs.mapData({ (rhsData: inout Data) -> Bool in
                 return lhsData == rhsData
             })
         })

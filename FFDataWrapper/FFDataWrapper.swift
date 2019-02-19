@@ -8,43 +8,28 @@
 
 import Foundation
 
-public typealias FFDataWrapperCoder = (UnsafeBufferPointer<UInt8>, UnsafeMutableBufferPointer<UInt8>) -> Void
 
 /// FFDataWrapper is a struct which wraps a piece of data and provides some custom internal representation for it.
 /// Conversions between original and internal representations can be specified with encoder and decoder closures.
 public struct FFDataWrapper {
+    /// This coder transforms data in its first argument and writes the result into its second argument.
+    public typealias Coder = (UnsafeBufferPointer<UInt8>, UnsafeMutableBufferPointer<UInt8>) -> Void
+    public typealias Coders = (encoder: Coder, decoder: Coder)
+    /// This coder transforms data in its first argument and writes the result into its second argument.
+    /// It optionally takes some extra info that it can use to perform the transformation
+    public typealias InfoCoder = (UnsafeBufferPointer<UInt8>, UnsafeMutableBufferPointer<UInt8>, Any?) -> Void
+    public typealias InfoCoders = (encoder: InfoCoder, decoder: InfoCoder)
+    
+    internal enum CodersEnum {
+        case coders(encoder: Coder, decoder: Coder)
+        case infoCoders(encoder: InfoCoder, decoder: InfoCoder)
+    }
+    
     /// Class holding the data buffer and responsible for wiping the data when FFDataWrapper is destroyed.
     internal let dataRef: FFDataRef
     
     /// Closures to convert external representation to internal and back
-    internal let coders: (encoder: FFDataWrapperCoder, decoder: FFDataWrapperCoder)
-    
-    /// Execute the given closure with wrapped data.
-    /// Data is converted back from its internal representation and is wiped after the closure is completed.
-    /// Wiping of the data will succeed ONLY if the data is not passed outside the closure (i.e. if there are no additional references to it
-    /// by the time the closure completes).
-    /// - Parameter block: The closure to execute.
-    @discardableResult
-    public func mapData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
-        var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
-
-        decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
-            self.coders.decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                                UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count))
-        })
-        
-        let result = try block(&decodedData)
-        
-        decodedData.resetBytes(in: 0 ..< decodedData.count)
-        
-        return result
-    }
-    
-    /// Will be deprecated soon. Please use mapData instead.
-    @discardableResult
-    public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
-        return try mapData(block)
-    }
+    internal let storedCoders: CodersEnum
     
     /// Returns true if the wrapped data is empty; false otherwise.
     public var isEmpty: Bool {
@@ -75,8 +60,8 @@ public func withDecodedData<ResultType>(_ w1: FFDataWrapper,
                                         _ w2: FFDataWrapper,
                                         _ block: (inout Data, inout Data) throws -> ResultType) rethrows -> ResultType
 {
-    return try w1.withDecodedData({ (w1Data: inout Data) -> ResultType in
-        return try w2.withDecodedData({ (w2Data: inout Data) -> ResultType in
+    return try w1.mapData({ (w1Data: inout Data) -> ResultType in
+        return try w2.mapData({ (w2Data: inout Data) -> ResultType in
             return try block(&w1Data, &w2Data)
         })
     })

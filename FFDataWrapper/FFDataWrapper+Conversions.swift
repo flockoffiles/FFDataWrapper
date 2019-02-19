@@ -20,7 +20,7 @@ extension FFDataWrapper: CustomStringConvertible {
     }
     
     func underlyingDataString() -> String {
-        return self.withDecodedData { decodedData -> String in
+        return self.mapData { decodedData -> String in
             if let dataAsString = String(data: decodedData, encoding: .utf8) {
                 return dataAsString
             }
@@ -38,8 +38,7 @@ extension FFDataWrapper: CustomDebugStringConvertible {
         var result = "FFDataWrapper:\n"
         result += "Underlying data: \"\(underlyingDataString())\"\n"
         result += "dataRef: \(String(reflecting:dataRef))\n"
-        result += "encoder: \(String(reflecting:self.coders.encoder))\n"
-        result += "decoder: \(String(reflecting:self.coders.decoder))"
+        result += "encoder: \(String(reflecting:self.storedCoders))\n"
         return result
     }
 }

@@ -46,10 +46,10 @@ class FFDataWrapperTests: XCTestCase
 
     func testWrapStringWithXOR()
     {
-        let wrapper1 = FFDataWrapper(testString)
+        let wrapper1 = FFDataWrapper(string: testString)
         
         var recoveredString = ""
-        wrapper1.withDecodedData {
+        wrapper1.mapData {
             recoveredString = String(data: $0, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -61,7 +61,7 @@ class FFDataWrapperTests: XCTestCase
 
         
         let wrapper2 = wrapper1
-        wrapper2.withDecodedData { data in
+        wrapper2.mapData { data in
             recoveredString = String(data: data, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -70,10 +70,10 @@ class FFDataWrapperTests: XCTestCase
     
     func testWraperStringWithCopy()
     {
-        let wrapper1 = FFDataWrapper(testString, FFDataWrapperEncoders.identity.coders)
+        let wrapper1 = FFDataWrapper(string: testString, coders: FFDataWrapperEncoders.identity.coders)
         
         var recoveredString = ""
-        wrapper1.withDecodedData {
+        wrapper1.mapData {
             recoveredString = String(data: $0, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -83,7 +83,7 @@ class FFDataWrapperTests: XCTestCase
         XCTAssertEqual(underlyingData, testData)
         
         let wrapper2 = wrapper1
-        wrapper2.withDecodedData {
+        wrapper2.mapData {
             recoveredString = String(data: $0, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -93,10 +93,10 @@ class FFDataWrapperTests: XCTestCase
     {
         let testData = testString.data(using: .utf8)!
         
-        let wrapper1 = FFDataWrapper(testData)
+        let wrapper1 = FFDataWrapper(data: testData)
         
         var recoveredString = ""
-        wrapper1.withDecodedData {
+        wrapper1.mapData {
             recoveredString = String(data: $0, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -105,7 +105,7 @@ class FFDataWrapperTests: XCTestCase
         XCTAssertNotEqual(underlyingData, testData)
 
         let wrapper2 = wrapper1
-        wrapper2.withDecodedData {
+        wrapper2.mapData {
             recoveredString = String(data: $0, encoding: .utf8)!
             XCTAssertEqual(recoveredString, testString)
         }
@@ -146,10 +146,10 @@ class FFDataWrapperTests: XCTestCase
         let testData = testString.data(using: .utf8)!
         let testDataLength = testData.count
         
-        let dataWrapper = FFDataWrapper(testData)
+        let dataWrapper = FFDataWrapper(data: testData)
         var copiedBacking = Data()
         
-        guard let bytes: UnsafeMutableRawPointer = dataWrapper.withDecodedData({ (data: inout Data) -> UnsafeMutableRawPointer? in
+        guard let bytes: UnsafeMutableRawPointer = dataWrapper.mapData({ (data: inout Data) -> UnsafeMutableRawPointer? in
             let dataAddress = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data)
             let backingPtr = dataAddress.assumingMemoryBound(to: UnsafeMutableRawPointer.self).pointee
             // We cannot instantiate FFDataStorage by pointee here because it will mess up the memory!
@@ -194,7 +194,7 @@ class FFDataWrapperTests: XCTestCase
         let decoded = try! decoder.decode(StructWithSensitiveData.self, from: jsonData)
         
         print(decoded)
-        decoded.sensitive.withDecodedData {
+        decoded.sensitive.mapData {
             print(String(data: $0, encoding: .utf8)!)
         }
         

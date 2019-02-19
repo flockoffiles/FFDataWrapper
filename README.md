@@ -11,14 +11,14 @@ Conversions between original and internal representations can be specified with 
 To use with cocoapods, add the following line to your Podfile:
 
 ```
-pod 'FFDataWrapper', '~> 1.5'
+pod 'FFDataWrapper', '~> 1.6'
 ```
 
 ### Carthage
 
 To use with Carthage, add the following line to your Cartfile:
 
-github "flockoffiles/FFDataWrapper" ~> 1.5
+github "flockoffiles/FFDataWrapper" ~> 1.6
 ## How to Use
 
 See FFDataWrapper.swift and FFDataWrapper+Initialization.swift for possible initializers.
