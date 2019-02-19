@@ -179,22 +179,6 @@ extension FFDataWrapper {
         
     }
 
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(capacity:coders:encode:initializer) instead")
-    public init(capacity: Int,
-                _ coders: FFDataWrapper.Coders? = nil,
-                _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) throws -> Void) throws {
-        try self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
-    }
-
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(capacity:coders:encode:initializer) instead")
-    public init(capacity: Int,
-                _ coders: FFDataWrapper.Coders? = nil,
-                _ encode: Bool = true,
-                _ initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) -> Void) {
-        try! self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
-    }
-
     public init(capacity: Int,
                 coder: @escaping FFDataWrapper.Coder,
                 encode: Bool = true,
