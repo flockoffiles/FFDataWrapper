@@ -10,9 +10,9 @@ import Foundation
 
 extension FFDataWrapper: Hashable {
     /// NOTE: The implementation does NOT take extra info into account (in case InfoCoder is being used).
-    public var hashValue: Int {
-        return mapData({ (data: inout Data) -> Int in
-            return data.hashValue
+    public func hash(into hasher: inout Hasher) {
+        mapData({ (data: inout Data) -> Void in
+            hasher.combine(data)
         })
     }
     

@@ -40,9 +40,6 @@ class FFDataWrapperTests: XCTestCase
     }
     
     let testString = "ABCDEFGH"
-    let shortTestString = "A"
-    let utf16TestString = "AB❤️💛❌✅"
-    let wipeCharacter = UInt8(46)
 
     func testWrapStringWithXOR()
     {
@@ -111,65 +108,31 @@ class FFDataWrapperTests: XCTestCase
         }
     }
     
-    struct FFClassHeader
-    {
-        let isa: UnsafeRawPointer
-        let retainCounts: UInt64
-    }
-    
-    /*
-     // String.swift
-     struct String {
-         var _guts: _StringGuts
-     }
-     // StringGuts.swift
-     struct _StringGuts {
-         internal var _object: _StringObject
-     }
-     
-     // StringObject.swift
-     internal struct _StringObject {
-         internal var _count: Int
-         internal var _variant: Variant
-         internal var _discriminator: Discriminator
-         internal var _flags: Flags
-         internal var _object: Builtin.BridgeObject
-     }
-     
-    */
-    
     /// Here we test that the temporary data which is given to the closure gets really wiped.
     /// This is the case where the data is NOT copied out.
     func testWipeAfterDecode()
     {
-        let testString = "ABCDEF"
+        // Inline data: 14 bytes
+        //
+        let testString = "ABCDEF0123456789ABCDEF"
         let testData = testString.data(using: .utf8)!
         let testDataLength = testData.count
         
         let dataWrapper = FFDataWrapper(data: testData)
         var copiedBacking = Data()
         
-        guard let bytes: UnsafeMutableRawPointer = dataWrapper.mapData({ (data: inout Data) -> UnsafeMutableRawPointer? in
-            let dataAddress = { (_ o: UnsafeRawPointer) -> UnsafeRawPointer in o }(&data)
-            let backingPtr = dataAddress.assumingMemoryBound(to: UnsafeMutableRawPointer.self).pointee
-            // We cannot instantiate FFDataStorage by pointee here because it will mess up the memory!
-            if let bytes = backingPtr.advanced(by: MemoryLayout<FFClassHeader>.size).assumingMemoryBound(to: UnsafeMutableRawPointer?.self).pointee
-            {
-                copiedBacking = Data(bytes: bytes, count: data.count)
-                return bytes
-            }
-            return nil
-        }) else {
-            XCTFail("Expecting to have a data storage")
-            return
-        }
+        let bytes: UnsafePointer<UInt8> = dataWrapper.mapData({ (data: inout Data) -> UnsafePointer<UInt8> in
+            return data.withUnsafeBytes({ (ptr: UnsafePointer<UInt8>) -> UnsafePointer<UInt8> in
+                copiedBacking = Data(bytes: ptr, count: data.count)
+                return ptr
+            })
+        })
         
         let copiedBackingString = String(data: copiedBacking, encoding: .utf8)
         XCTAssertEqual(copiedBackingString, testString)
         let reconstructedBacking = Data(bytes: bytes, count: testDataLength)
         
-        let expectedReconstructedBacking = Data.init(count: testDataLength)
-        XCTAssertEqual(reconstructedBacking, expectedReconstructedBacking)
+        XCTAssertNotEqual(reconstructedBacking, copiedBacking)
     }
     
     struct StructWithSensitiveData: Decodable

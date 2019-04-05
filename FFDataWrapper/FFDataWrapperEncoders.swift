@@ -81,7 +81,7 @@ public extension FFDataWrapperEncoders {
     ///   - src: Source data to transform.
     ///   - srcLength: Length of the source data.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
-    public static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) {
+    static func justCopy(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>) {
         // Wipe contents if needed.
         if (dest.count > 0) {
             dest.baseAddress!.initialize(repeating: 0, count: dest.count)
@@ -100,7 +100,7 @@ public extension FFDataWrapperEncoders {
     ///   - src: Source data to transform.
     ///   - dest: Destination data buffer. Will be cleared before transformation takes place.
     ///   - with: Vector to XOR with. If the vector is shorter than the original data, it will be wrapped around.
-    public static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data) {
+    static func xor(src: UnsafeBufferPointer<UInt8>, dest: UnsafeMutableBufferPointer<UInt8>, with: Data) {
         // Initialize contents
         if (dest.count > 0) {
             dest.baseAddress!.initialize(repeating: 0, count: dest.count)
@@ -123,7 +123,7 @@ public extension FFDataWrapperEncoders {
 }
 
 public extension Array where Element == UInt8 {
-    public func coders(_ coder: (Data) -> FFDataWrapper.Coder) -> (FFDataWrapper.Coder, FFDataWrapper.Coder) {
+    func coders(_ coder: (Data) -> FFDataWrapper.Coder) -> (FFDataWrapper.Coder, FFDataWrapper.Coder) {
         let data = Data(bytes: self)
         return (coder(data), coder(data))
     }

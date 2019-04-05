@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = 'FFDataWrapper'
-    spec.version      = '1.7'
+    spec.version      = '1.8'
     spec.ios.deployment_target = "9.3"
 	spec.osx.deployment_target = "10.10"
     spec.license      = { :type => 'MIT', :file => 'LICENSE' }
@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
     spec.source_files = 'FFDataWrapper/*.swift',
 	spec.public_header_files = 'FFDataWrapper/*.h'
     spec.documentation_url = 'https://github.com/flockoffiles/FFDataWrapper/'
-	spec.swift_version = '4.1'
+	spec.swift_version = '4.2'
     # spec.dependency '', '~> 0.0.0'
     spec.preserve_paths = 'README.md', 'FFDataWrapperTests/*.swift'
 end

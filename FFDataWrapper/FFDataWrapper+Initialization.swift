@@ -44,7 +44,7 @@ extension FFDataWrapper {
         dataRef = FFDataRef(length: 0)
     }
 
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(coders:) instead")
+    @available(*, deprecated, message: "This method is deprecated. Please use init(coders:) instead")
     public init(_ coders: Coders? = nil) {
         self.init(coders: coders)
     }
@@ -112,7 +112,7 @@ extension FFDataWrapper {
                 encode: Bool = true,
                 initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void) {
         let coders: FFDataWrapper.Coders? = FFDataWrapper.Coders(coder, coder)
-        try! self.init(length: length, coders: coders, encode: encode, initializer: initializer)
+        self.init(length: length, coders: coders, encode: encode, initializer: initializer)
     }
 
     /// Create a wrapper with the given maximum capacity (in bytes).
@@ -176,7 +176,7 @@ extension FFDataWrapper {
                 encode: Bool = true,
                 initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) -> Void) {
         let coders = FFDataWrapper.Coders(coder, coder)
-        try! self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
+        self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
     }
 
 }

@@ -16,7 +16,7 @@ public extension FFDataWrapper {
     ///   - coders: The encoder/decoder pair which performs the conversion between external and internal representations. If nil, the default XOR coders will be used.
     ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
     ///          already encoded underlying representation.
-    public init(string: String,
+    init(string: String,
                 coders: (encoder: FFDataWrapper.Coder, decoder: FFDataWrapper.Coder)? = nil,
                 encode: Bool = true) {
         
@@ -37,8 +37,8 @@ public extension FFDataWrapper {
         }
     }
 
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(string:coders:encode) instead")
-    public init(_ string: String,
+    @available(*, deprecated, message: "This method is deprecated. Please use init(string:coders:encode) instead")
+    init(_ string: String,
                 _ coders: (encoder: FFDataWrapper.Coder, decoder: FFDataWrapper.Coder)? = nil,
                 _ encode: Bool = true) {
         self.init(string: string, coders: coders, encode: encode)
@@ -51,7 +51,7 @@ public extension FFDataWrapper {
     ///   - infoCoders: The encoder/decoder pair which performs the conversion between external and internal representations. If nil, the default coders will be used.
     ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
     ///          already encoded underlying representation.
-    public init(_ string: String,
+    init(_ string: String,
                 infoCoders: FFDataWrapper.InfoCoders? = nil,
                 info: Any? = nil,
                 encode: Bool = true) {

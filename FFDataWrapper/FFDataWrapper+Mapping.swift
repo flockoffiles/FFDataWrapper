@@ -70,7 +70,7 @@ extension FFDataWrapper {
     }
     
     /// Will be deprecated soon. Please use mapData instead.
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use mapData instead")
+    @available(*, deprecated, message: "This method is deprecated. Please use mapData instead")
     @discardableResult
     public func withDecodedData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
         return try mapData(block)

@@ -16,7 +16,7 @@ public extension FFDataWrapper {
     ///   - coders: Pair of coders to use to convert to/from the internal representation. If nil, the default XOR coders will be used.
     ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
     ///          already encoded underlying representation.
-    public init(data: Data,
+    init(data: Data,
                 coders: (encoder: FFDataWrapper.Coder, decoder: FFDataWrapper.Coder)? = nil,
                 encode: Bool = true) {
         let unwrappedCoders = coders.unwrapWithDefault(length: data.count)
@@ -33,8 +33,8 @@ public extension FFDataWrapper {
         }
     }
 
-    @available(*, deprecated: 1.6, message: "This method is deprecated. Please use init(data:coders:encode) instead")
-    public init(_ data: Data,
+    @available(*, deprecated, message: "This method is deprecated. Please use init(data:coders:encode) instead")
+    init(_ data: Data,
                 _ coders: (encoder: FFDataWrapper.Coder, decoder: FFDataWrapper.Coder)? = nil,
                 _ encode: Bool = true) {
         self.init(data: data, coders: coders, encode: encode)
@@ -48,7 +48,7 @@ public extension FFDataWrapper {
     ///   - info: Additional info to pass to the coders.
     ///   - encode: If true, encoder will be applied to the provided string; if false, the string will be assumed to already contain
     ///          already encoded underlying representation.
-    public init(data: Data,
+    init(data: Data,
                 infoCoders: FFDataWrapper.InfoCoders? = nil,
                 info: Any? = nil,
                 encode: Bool = true) {
