@@ -112,7 +112,7 @@ extension FFDataWrapper {
                 encode: Bool = true,
                 initializer: (UnsafeMutableBufferPointer<UInt8>) -> Void) {
         let coders: FFDataWrapper.Coders? = FFDataWrapper.Coders(coder, coder)
-        self.init(length: length, coders: coders, encode: encode, initializer: initializer)
+        try! self.init(length: length, coders: coders, encode: encode, initializer: initializer)
     }
 
     /// Create a wrapper with the given maximum capacity (in bytes).
@@ -176,7 +176,7 @@ extension FFDataWrapper {
                 encode: Bool = true,
                 initializer: (UnsafeMutableBufferPointer<UInt8>, UnsafeMutablePointer<Int>) -> Void) {
         let coders = FFDataWrapper.Coders(coder, coder)
-        self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
+        try! self.init(capacity: capacity, coders: coders, encode: encode, initializer: initializer)
     }
 
 }
