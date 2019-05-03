@@ -1,5 +1,8 @@
 # FFDataWrapper
 
+## Version 1.9
+- Changed the name of the framework/module on MacOS to avoid conflicts in the Xcode new build system.
+
 ## Version 1.8
 - Updated for Xcode 10.2
 - Swift version was changed to 4.2

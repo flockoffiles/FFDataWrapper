@@ -53,7 +53,7 @@
 /* Begin PBXFileReference section */
 		570121B322579DB8001212E7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		570121B422579DCC001212E7 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
-		572AF0B120371C230094DA85 /* FFDataWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		572AF0B120371C230094DA85 /* FFDataWrapperMacOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapperMacOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		572AF0B320371C230094DA85 /* FFDataWrapperMacOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFDataWrapperMacOS.h; sourceTree = "<group>"; };
 		572AF0B420371C230094DA85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5766C516221BFB130063EA80 /* FFDataWrapper+Mapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Mapping.swift"; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 			children = (
 				A5063F831F73B29500CA4109 /* FFDataWrapper.framework */,
 				A5063F8C1F73B29500CA4109 /* FFDataWrapperTests.xctest */,
-				572AF0B120371C230094DA85 /* FFDataWrapper.framework */,
+				572AF0B120371C230094DA85 /* FFDataWrapperMacOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -206,7 +206,7 @@
 			);
 			name = FFDataWrapperMacOS;
 			productName = FFDataWrapperMacOS;
-			productReference = 572AF0B120371C230094DA85 /* FFDataWrapper.framework */;
+			productReference = 572AF0B120371C230094DA85 /* FFDataWrapperMacOS.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A5063F821F73B29500CA4109 /* FFDataWrapper */ = {
@@ -394,7 +394,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapperMacOS;
-				PRODUCT_NAME = FFDataWrapper;
+				PRODUCT_NAME = FFDataWrapperMacOS;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -419,7 +419,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapperMacOS;
-				PRODUCT_NAME = FFDataWrapper;
+				PRODUCT_NAME = FFDataWrapperMacOS;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
