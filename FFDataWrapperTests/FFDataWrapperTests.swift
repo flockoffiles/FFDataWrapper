@@ -122,9 +122,9 @@ class FFDataWrapperTests: XCTestCase
         var copiedBacking = Data()
         
         let bytes: UnsafePointer<UInt8> = dataWrapper.mapData({ (data: inout Data) -> UnsafePointer<UInt8> in
-            return data.withUnsafeBytes({ (ptr: UnsafePointer<UInt8>) -> UnsafePointer<UInt8> in
-                copiedBacking = Data(bytes: ptr, count: data.count)
-                return ptr
+            return data.withUnsafeBytes({ (ptr: UnsafeRawBufferPointer) -> UnsafePointer<UInt8> in
+                copiedBacking = Data(bytes: ptr.baseAddress!.assumingMemoryBound(to: UInt8.self), count: data.count)
+                return ptr.baseAddress!.assumingMemoryBound(to: UInt8.self)
             })
         })
         

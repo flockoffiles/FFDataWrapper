@@ -19,15 +19,17 @@ extension FFDataWrapper {
     public func mapData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
         var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
         
-        let count = decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Int in
+        let count = decodedData.withUnsafeMutableBytes({ (destMutableRawBufferPtr: UnsafeMutableRawBufferPointer) -> Int in
             switch self.storedCoders {
             case .coders(_, let decoder):
                 decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count))
+                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                                                   count: dataRef.dataBuffer.count))
                 return dataRef.dataBuffer.count
             case .infoCoders(_, let decoder):
                 decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count), nil)
+                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                                                   count: dataRef.dataBuffer.count), nil)
                 return dataRef.dataBuffer.count
             }
             
@@ -54,14 +56,16 @@ extension FFDataWrapper {
     public func mapData<ResultType>(info: Any?, block: (inout Data) throws -> ResultType) rethrows -> ResultType {
         var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
         
-        decodedData.withUnsafeMutableBytes({ (destPtr: UnsafeMutablePointer<UInt8>) -> Void in
+        decodedData.withUnsafeMutableBytes({ (destMutableRawBufferPtr: UnsafeMutableRawBufferPointer) -> Void in
             switch self.storedCoders {
             case .coders(_, let decoder):
                 decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count))
+                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                                                   count: dataRef.dataBuffer.count))
             case .infoCoders(_, let decoder):
                 decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destPtr, count: dataRef.dataBuffer.count), info)
+                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                                                   count: dataRef.dataBuffer.count), info)
             }
         })
         let result = try block(&decodedData)

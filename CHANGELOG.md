@@ -1,5 +1,10 @@
 # FFDataWrapper
 
+# Version 1.10
+- Swift version is changed to 5.
+- Xcode versions lower than 10.2 are no longer supported.
+- Fixed compiler deprecation warnings.
+
 ## Version 1.9
 - Changed the name of the framework/module on MacOS to avoid conflicts in the Xcode new build system.
 

@@ -24,7 +24,7 @@ public enum FFDataWrapperEncoders {
         case .xorWithRandomVectorOfLength(let length):
             var vector = Data(count: length)
             let _ = vector.withUnsafeMutableBytes {
-                SecRandomCopyBytes(kSecRandomDefault, length, $0)
+                return SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!)
             }
             
             return (encoder: FFDataWrapperEncoders.xorWithVector(vector), decoder: FFDataWrapperEncoders.xorWithVector(vector))
@@ -40,7 +40,7 @@ public enum FFDataWrapperEncoders {
         case .xorWithRandomVectorOfLength(let length):
             var vector = Data(count: length)
             let _ = vector.withUnsafeMutableBytes {
-                SecRandomCopyBytes(kSecRandomDefault, length, $0)
+                return SecRandomCopyBytes(kSecRandomDefault, $0.count, $0.baseAddress!)
             }
             
             return (encoder: FFDataWrapperEncoders.infoXorWithVector(vector), decoder: FFDataWrapperEncoders.infoXorWithVector(vector))
@@ -124,7 +124,7 @@ public extension FFDataWrapperEncoders {
 
 public extension Array where Element == UInt8 {
     func coders(_ coder: (Data) -> FFDataWrapper.Coder) -> (FFDataWrapper.Coder, FFDataWrapper.Coder) {
-        let data = Data(bytes: self)
+        let data = Data(self)
         return (coder(data), coder(data))
     }
 }
