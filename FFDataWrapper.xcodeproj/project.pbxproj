@@ -78,7 +78,7 @@
 		5789610F221B1931001373CE /* FFDataWrapper+ByteArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+ByteArray.swift"; sourceTree = "<group>"; };
 		57A1D488202D9D700038147C /* FFDataWrapper+Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Conversions.swift"; sourceTree = "<group>"; };
 		57A1D48A202D9DD10038147C /* FFDataWrapper+Initialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Initialization.swift"; sourceTree = "<group>"; };
-		57BD9E9422B3CF22000BE530 /* FFDataWrapper.static.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.static.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		57BD9E9422B3CF22000BE530 /* FFDataWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		57C298D92031C2D70071B293 /* FFDataWrapper+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FFDataWrapper+Hashable.swift"; sourceTree = "<group>"; };
 		A5063F831F73B29500CA4109 /* FFDataWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FFDataWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5063F861F73B29500CA4109 /* FFDataWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFDataWrapper.h; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 				A5063F831F73B29500CA4109 /* FFDataWrapper.framework */,
 				A5063F8C1F73B29500CA4109 /* FFDataWrapperTests.xctest */,
 				572AF0B120371C230094DA85 /* FFDataWrapperMacOS.framework */,
-				57BD9E9422B3CF22000BE530 /* FFDataWrapper.static.framework */,
+				57BD9E9422B3CF22000BE530 /* FFDataWrapper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,7 +257,7 @@
 			);
 			name = FFDataWrapper.static;
 			productName = FFDataWrapper;
-			productReference = 57BD9E9422B3CF22000BE530 /* FFDataWrapper.static.framework */;
+			productReference = 57BD9E9422B3CF22000BE530 /* FFDataWrapper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A5063F821F73B29500CA4109 /* FFDataWrapper */ = {
@@ -523,7 +523,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFDataWrapper;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -548,7 +548,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.flockoffiles.FFDataWrapper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FFDataWrapper;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
