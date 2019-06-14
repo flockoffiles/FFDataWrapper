@@ -1,6 +1,6 @@
 # FFDataWrapper
 
-# Version 1.10
+# Version 2.0
 - Swift version is changed to 5.
 - Xcode versions lower than 10.2 are no longer supported.
 - Fixed compiler deprecation warnings.
