@@ -22,7 +22,7 @@ extension FFDataWrapper.CodersEnum {
 extension Optional where Wrapped == FFDataWrapper.Coders {
     func unwrapWithDefault(length: Int) -> FFDataWrapper.Coders  {
         switch self {
-        case .some(let encoder, let decoder):
+        case .some((let encoder, let decoder)):
             return (encoder, decoder)
         case .none:
             return FFDataWrapperEncoders.xorWithRandomVectorOfLength(length).coders
