@@ -30,9 +30,13 @@ public extension FFDataWrapper {
         if (length > 0) {
             // Obfuscate the data
             utf8.withUnsafeBytes {
-                let initialEncoder = encode ? unwrappedCoders.encoder : FFDataWrapperEncoders.identity.coders.encoder
-                initialEncoder(UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count: length),
-                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length))
+                let startPtr = UnsafeBufferPointer(start: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count: length)
+                let endPtr = UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length)
+                if encode {
+                    unwrappedCoders.encoder(startPtr, endPtr)
+                } else {
+                    FFDataWrapperEncoders.identity.coders.encoder(startPtr, endPtr)
+                }
             }
         }
     }

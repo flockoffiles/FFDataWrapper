@@ -63,9 +63,14 @@ extension FFDataWrapper {
         }
         
         try initializer(UnsafeMutableBufferPointer(start: tempBufferPtr, count: length))
-        let initialEncoder = encode ? unwrappedCoders.encoder : FFDataWrapperEncoders.identity.infoCoders.encoder
-        initialEncoder(UnsafeBufferPointer(start: tempBufferPtr, count: length),
-                       UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length), info)
+        let startPtr = UnsafeBufferPointer(start: tempBufferPtr, count: length)
+        let endPtr = UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: length)
+        if encode {
+            unwrappedCoders.encoder(startPtr, endPtr, info)
+        } else {
+            FFDataWrapperEncoders.identity.infoCoders.encoder(startPtr, endPtr, info)
+        }
+                       
     }
 
     /// Create a wrapper of the given length and the given initializer closure.
@@ -148,10 +153,13 @@ extension FFDataWrapper {
         self.storedCoders = CodersEnum(infoCoders: unwrappedCoders)
         
         self.dataRef = FFDataRef(length: actualLength)
-        let encoder = encode ? unwrappedCoders.encoder : FFDataWrapperEncoders.identity.infoCoders.encoder
-        encoder(UnsafeBufferPointer(start: tempBufferPtr, count: actualLength),
-                UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count), info)
-        
+        let startPtr = UnsafeBufferPointer(start: tempBufferPtr, count: actualLength)
+        let endPtr = UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count)
+        if encode {
+            unwrappedCoders.encoder(startPtr, endPtr, info)
+        } else {
+            FFDataWrapperEncoders.identity.infoCoders.encoder(startPtr, endPtr, info)
+        }
     }
 
     public init(capacity: Int,

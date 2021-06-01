@@ -25,10 +25,15 @@ public extension FFDataWrapper {
         dataRef = FFDataRef(length: byteArray.count)
         
         if (byteArray.count > 0) {
-            let initialEncoder = encode ? unwrappedCoders.encoder : FFDataWrapperEncoders.identity.coders.encoder
             // Encode the data
             byteArray.withUnsafeBufferPointer {
-                initialEncoder($0, UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
+                let startPtr = $0
+                let endPtr = UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count)
+                if encode {
+                    unwrappedCoders.encoder(startPtr, endPtr)
+                } else {
+                    FFDataWrapperEncoders.identity.coders.encoder(startPtr, endPtr)
+                }
             }
         }
     }

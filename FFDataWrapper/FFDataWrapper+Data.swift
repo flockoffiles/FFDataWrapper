@@ -26,9 +26,13 @@ public extension FFDataWrapper {
         if (data.count > 0) {
             // Encode the data
             data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> Void in
-                let initialEncoder = encode ? unwrappedCoders.encoder : FFDataWrapperEncoders.identity.coders.encoder
-                initialEncoder(UnsafeBufferPointer(start: bytes.baseAddress!.assumingMemoryBound(to: UInt8.self), count: data.count),
-                               UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count))
+                let startPtr = UnsafeBufferPointer(start: bytes.baseAddress!.assumingMemoryBound(to: UInt8.self), count: data.count)
+                let endPtr = UnsafeMutableBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: self.dataRef.dataBuffer.count)
+                if encode {
+                    unwrappedCoders.encoder(startPtr, endPtr)
+                } else {
+                    FFDataWrapperEncoders.identity.coders.encoder(startPtr, endPtr)
+                }
             }
         }
     }
