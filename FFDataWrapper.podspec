@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name         = 'FFDataWrapper'
-    spec.version      = '2.0'
-    spec.ios.deployment_target = "9.3"
+    spec.version      = '2.1'
+    spec.ios.deployment_target = "12.0"
 	spec.osx.deployment_target = "10.10"
     spec.license      = { :type => 'MIT', :file => 'LICENSE' }
     spec.summary      = 'Wrapper for data or string objects with custom internal storage'

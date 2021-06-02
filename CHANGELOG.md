@@ -1,5 +1,10 @@
 # FFDataWrapper
 
+# Version 2.1
+- Minimum deployment target changed to 12.0.
+- Disabled M1 support for the Simulator (to make it build with Carthage).
+- Worked around a compiler bug under Xcode 12.5
+
 # Version 2.0
 - Swift version is changed to 5.
 - Xcode versions lower than 10.2 are no longer supported.
