@@ -1,5 +1,8 @@
 # FFDataWrapper
 
+# Version 2.2
+- Disabled M1 support for the Simulator in Xcode 13 (to make it build with Carthage)
+
 # Version 2.1
 - Minimum deployment target changed to 12.0.
 - Disabled M1 support for the Simulator (to make it build with Carthage).
