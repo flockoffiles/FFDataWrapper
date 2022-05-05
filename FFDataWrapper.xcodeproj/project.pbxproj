@@ -264,9 +264,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5063F971F73B29500CA4109 /* Build configuration list for PBXNativeTarget "FFDataWrapper" */;
 			buildPhases = (
+				A5063F801F73B29500CA4109 /* Headers */,
 				A5063F7E1F73B29500CA4109 /* Sources */,
 				A5063F7F1F73B29500CA4109 /* Frameworks */,
-				A5063F801F73B29500CA4109 /* Headers */,
 				A5063F811F73B29500CA4109 /* Resources */,
 			);
 			buildRules = (

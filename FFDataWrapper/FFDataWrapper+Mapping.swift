@@ -17,33 +17,39 @@ extension FFDataWrapper {
     /// - Parameter block: The closure to execute.
     @discardableResult
     public func mapData<ResultType>(_ block: (inout Data) throws -> ResultType) rethrows -> ResultType {
-        var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
+        var decodedData = Data(repeating: 0, count: dataRef.dataBuffer.count)
+        getDecodedData(&decodedData)
         
-        let count = decodedData.withUnsafeMutableBytes({ (destMutableRawBufferPtr: UnsafeMutableRawBufferPointer) -> Int in
-            switch self.storedCoders {
-            case .coders(_, let decoder):
-                decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                                                   count: dataRef.dataBuffer.count))
-                return dataRef.dataBuffer.count
-            case .infoCoders(_, let decoder):
-                decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
-                        UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
-                                                   count: dataRef.dataBuffer.count), nil)
-                return dataRef.dataBuffer.count
-            }
-            
-        })
-        // Must NOT grow the buffer of decodedData (only shrink)
-        if count < decodedData.count {
-            decodedData.count = count
+        defer {
+            decodedData.resetBytes(in: 0 ..< decodedData.count)
         }
-        let result = try block(&decodedData)
         
-        decodedData.resetBytes(in: 0 ..< decodedData.count)
+        let result = try block(&decodedData)
+                
+        return result
+    }
+    
+    #if swift(>=5.5.2) && canImport(_Concurrency)
+    /// Execute the given async closure with wrapped data.
+    /// Data is converted back from its internal representation and is wiped after the closure is completed.
+    /// Wiping of the data will succeed ONLY if the data is not passed outside the closure (i.e. if there are no additional references to it
+    /// by the time the closure completes).
+    /// - Parameter block: The closure to execute.
+    @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+    @discardableResult
+    public func mapData<ResultType>(_ block: (inout Data) async throws -> ResultType) async rethrows -> ResultType {
+        var decodedData = Data(repeating: 0, count: dataRef.dataBuffer.count)
+        getDecodedData(&decodedData)
+        
+        defer {
+            decodedData.resetBytes(in: 0 ..< decodedData.count)
+        }
+
+        let result = try await block(&decodedData)
         
         return result
     }
+    #endif
     
     /// Execute the given closure with wrapped data.
     /// This version takes some extra info and passes it to the decoder in case InfoCoder was used.
@@ -54,9 +60,21 @@ extension FFDataWrapper {
     /// - Parameter block: The closure to execute.
     @discardableResult
     public func mapData<ResultType>(info: Any?, block: (inout Data) throws -> ResultType) rethrows -> ResultType {
-        var decodedData = Data(repeating:0, count: dataRef.dataBuffer.count)
+        var decodedData = Data(repeating: 0, count: dataRef.dataBuffer.count)
+        getDecodedData(&decodedData, info: info)
         
-        decodedData.withUnsafeMutableBytes({ (destMutableRawBufferPtr: UnsafeMutableRawBufferPointer) -> Void in
+        defer {
+            decodedData.resetBytes(in: 0 ..< decodedData.count)
+        }
+        
+        let result = try block(&decodedData)
+        return result
+    }
+    
+    func getDecodedData(_ decodedData: inout Data, info: Any? = nil) {
+        decodedData.reserveCapacity(dataRef.dataBuffer.count)
+        
+        let count = decodedData.withUnsafeMutableBytes { destMutableRawBufferPtr -> Int in
             switch self.storedCoders {
             case .coders(_, let decoder):
                 decoder(UnsafeBufferPointer(start: self.dataRef.dataBuffer.baseAddress!, count: dataRef.dataBuffer.count),
@@ -67,10 +85,13 @@ extension FFDataWrapper {
                         UnsafeMutableBufferPointer(start: destMutableRawBufferPtr.baseAddress!.assumingMemoryBound(to: UInt8.self),
                                                    count: dataRef.dataBuffer.count), info)
             }
-        })
-        let result = try block(&decodedData)
-        decodedData.resetBytes(in: 0 ..< decodedData.count)
-        return result
+            return dataRef.dataBuffer.count
+        }
+
+        // Must NOT grow the buffer of decodedData (only shrink)
+        if count < decodedData.count {
+            decodedData.count = count
+        }
     }
     
     /// Will be deprecated soon. Please use mapData instead.
