@@ -135,6 +135,36 @@ class FFDataWrapperTests: XCTestCase
         XCTAssertNotEqual(reconstructedBacking, copiedBacking)
     }
     
+    #if swift(>=5.5.2) && canImport(_Concurrency)
+    @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+    func testAsync() async {
+        // Inline data: 14 bytes
+        //
+        let testString = "ABCDEF0123456789ABCDEF"
+        let testData = testString.data(using: .utf8)!
+        let testDataLength = testData.count
+        
+        let dataWrapper = FFDataWrapper(data: testData)
+        var copiedBacking = Data()
+
+        let bytes: UnsafePointer<UInt8> = await dataWrapper.mapData { (data: inout Data) async -> UnsafePointer<UInt8> in
+            await withUnsafeContinuation { continuation in
+                let pointer = data.withUnsafeBytes { (ptr: UnsafeRawBufferPointer) -> UnsafePointer<UInt8> in
+                    copiedBacking = Data(bytes: ptr.baseAddress!.assumingMemoryBound(to: UInt8.self), count: data.count)
+                    return ptr.baseAddress!.assumingMemoryBound(to: UInt8.self)
+                }
+                continuation.resume(returning: pointer)
+            }
+        }
+        
+        let copiedBackingString = String(data: copiedBacking, encoding: .utf8)
+        XCTAssertEqual(copiedBackingString, testString)
+        let reconstructedBacking = Data(bytes: bytes, count: testDataLength)
+        
+        XCTAssertNotEqual(reconstructedBacking, copiedBacking)
+    }
+    #endif
+    
     struct StructWithSensitiveData: Decodable
     {
         var name: String
